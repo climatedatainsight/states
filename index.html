@@ -1,14 +1,12 @@
+  
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
 <style>
-
-
 .states {
   fill: none;
   
 }
-
 .grid .tick {
     stroke: lightgrey;
     opacity: 0.3;
@@ -28,17 +26,14 @@
   background: rgba(0, 0, 0, 0.8);
   color: #fff;
   border-radius: 2px;
-
 }
 body {
       font-family:"avenir next", Arial, sans-serif;
       font-size: 14px;
       color: #696969;
     }
-
     #play-button {
       position: absolute;
-      
       background: #f08080;
       padding-right: 26px;
       border-radius: 3px;
@@ -50,7 +45,6 @@ body {
       cursor: pointer;
       height: 20px;
     }
-
     #play-button:hover {
       background-color: #696969;
     }    
@@ -58,38 +52,32 @@ body {
     .ticks {
       font-size: 10px;
     }
-
     .track,
     .track-inset,
     .track-overlay {
       stroke-linecap: round;
     }
-
     .track {
       stroke: #000;
       stroke-opacity: 0.3;
       stroke-width: 10px;
     }
-
     .track-inset {
       stroke: #dcdcdc;
       stroke-width: 8px;
     }
-
     .track-overlay {
       pointer-events: stroke;
       stroke-width: 10px;
       stroke: transparent;
       cursor: crosshair;
     }
-
     .handle {
       fill: #fff;
       stroke: #000;
       stroke-opacity: 0.5;
       stroke-width: 1.25px;
     }
-
     .tile {
     shape-rendering: crispEdges;
   }
@@ -103,7 +91,6 @@ body {
   .row {
   display: flex;
   }
-
   .column {
     flex: 50%;
   }
@@ -116,7 +103,6 @@ body {
     font-family:"avenir next", Arial, sans-serif;
       font-size: 20px;
   }
-
   /* Style the buttons that are used to open the tab content */
   .tab button {
     background-color: inherit;
@@ -129,22 +115,16 @@ body {
     font-family:"avenir next", Arial, sans-serif;
       font-size: 14px;
   }
-
  /* Change background color of buttons on hover */
 .tablink:hover {
   background-color: #777;
 }
-
   /* Create an active/current tablink class */
   .tab button.active {
     background-color:skyblue;
     font-weight: bold;
     
   }
-
-
-
-
   /* Style the tab content */
 .tabcontent {
   display: none;
@@ -164,8 +144,6 @@ body {
   font-size: 15px;
   width: 50%;
 }
-
-
 /* left - right */
 .left {
  /* background-color:#2196F3;*/
@@ -173,25 +151,18 @@ body {
   float:left;
   width:50%; /* The width is 20%, by default */
 }
-
-
-
 .right {
  /* background-color:#4CAF50;*/
  
   float:left;
   width:50%; /* The width is 20%, by default */
 }
-
 /* Use a media query to add a break point at 800px: */
-@media screen and (max-width:800px) {
+@media screen and (max-width:900px) {
   .left,  .right {
     width:100%; /* The width is 100%, when the viewport is 800px or smaller */
   }
 }
-
-
-
 </style>
 
 
@@ -205,12 +176,12 @@ body {
 </head>
 <body>
     <div id="state" class = "left">
-        <h2> Climate Data Insights for the Contiguous United States (1950 - 2038)</h2>
+        <h2> Climate Data Insights for the Contiguous United States (1950 - 2040)</h2>
       <h4>     Riyas Abdulkhadar   |   Ahmad Ali   |   Jared Becker   |   Will Culpepper   |   Armand Go     
               </h4> 
       <h5>Master of Science in Analytics, Georgia Institute of Technology</h5>
         <p>Leveraging Machine Learning algorithms, the Interactive visualizations on this page let's you demystify the impacts of climate change on individual states and explore patterns in those changes. 
-            You can click on states to further drill down monthly and yearly trend in Max Temprature and Precipitation.
+            You can click on states to further drill down monthly and yearly trend in Max temperature and Precipitation.
 
             </p>
           
@@ -229,6 +200,8 @@ body {
                 <button id="play-button">Play</button> 
                   
           </div>
+          <h1> </h1>
+          <h2> </h2>
 
               
     </div>
@@ -240,8 +213,12 @@ body {
           </div>   
       <div id="chart1" class="tabcontent">
         <div id="state-dropdown-container"><h4> Compare a state:</h4></div> 
+        <h1> </h1>
+        <h1> </h1>
       </div>
       <div id="chart2" class="tabcontent">
+          <h1> </h1>
+          <h1> </h1>
           <p>A simple line chart doesn't tell the whole story. This innovative Heatmap chart helps in the understanding of seasonal shifts in climate. 
             Change on Horizontal axis captures the yearly trend and color changes across Vertical axis explains the shifts across months (seasons)
              </p>
@@ -269,27 +246,23 @@ body {
   //  console.log("inside openTab");
     // Declare all variables
     var i, tabcontent, tablinks;
-
     // Get all elements with class="tabcontent" and hide them
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
       tabcontent[i].style.display = "none";
     }
-
     // Get all elements with class="tablinks" and remove the class "active"
     tablinks = document.getElementsByClassName("tablinks");
     for (i = 0; i < tablinks.length; i++) {
    //   console.log("inside openTab - replace");
       tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
-
     // Show the current tab, and add an "active" class to the button that opened the tab
     document.getElementById(Name).style.display = "block";
     evt.currentTarget.className += " active";
   }
   document.getElementById("monthly").click();
   document.getElementById("details").style.display = "none";
-
     function responsivefy(svg) {
     // container will be the DOM element
     // that the svg is appended to
@@ -334,8 +307,8 @@ var clusterdata = "";
 var maptitle = "";
 var maptitlecombined = "";
 var factorsList = [
-                    "Change in total precipitation (1950 - 2038)",                           //0
-                    "Change in max temperature (1950 - 2038)",                               //1
+                    "Change in total precipitation (1950 - 2040)",                           //0
+                    "Change in max temperature (1950 - 2040)",                               //1
                     "Grouping of states based on max temperature changes (1950 - 2016)",               //2
                     "Grouping of states based on total precipitation changes (1950 - 2016)",               //3
                     "Deprecated - Change in Max Temp - 1970 to 2019",                                    //4
@@ -353,14 +326,14 @@ var factorsList = [
                     ];
 var dropdownlist = [factorsList[1],factorsList[2],factorsList[12],factorsList[15],factorsList[10],factorsList[8],
                   factorsList[0],factorsList[3],factorsList[11],factorsList[9]]
-
 var seasonaltempinterval = 10
 var winwidth = window.innerWidth,
     winheight = window.innerHeight;
-  if(winwidth>850) {
+    console.log(winwidth,winheight)
+  if(winwidth>900) {
     var wd = winwidth/2;
     }
-    if(winwidth<=850) {
+    if(winwidth<=900) {
     var wd = winwidth;
     }
 var scale = wd/960;
@@ -368,7 +341,6 @@ var margin = {top: 20, right: 5, bottom: 5, left: 10};
 var margin_s = {top: 100, right: 20, bottom: 100, left: 60};
 var width = wd - margin.left - margin.right,
   height = 560*scale - margin.top - margin.bottom;
-
  var width_s = wd - margin_s.left - margin_s.right,
     height_s = wd*.5 - margin.top - margin.bottom;
 ////////////----------------------------------------------------------------slider
@@ -377,18 +349,15 @@ var formatDate = d3.timeFormat("%Y");
 var parseDate = d3.timeParse("%m/%d/%y");
 var parseYear = d3.timeParse("%Y");
 var nyears = 3; // moving average
-
 var moving = false;
 var currentValue = 0;
 var targetValue = width;
-
 var playButton = d3.select("#play-button")
                     .attr("top",margin.top+margin.bottom/8)
                     .attr("left",margin.left)
                     //top: 150px;
                     // left: 10px;
                     ;
-
 var svgslider = d3.select("#slider")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -396,11 +365,7 @@ var svgslider = d3.select("#slider")
 var slider = svgslider.append("g")
     .attr("class", "slider")
     .attr("transform", "translate(" + margin.left + "," + 10 + ")");
-
-
 ////
-
-
 /////-------------------------------------------------------------------------- Map
 var svg = d3.select("#map")
         .append("svg")
@@ -410,16 +375,12 @@ var svg = d3.select("#map")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .call(responsivefy)
         ;
-
-
 var projection = d3.geoAlbersUsa()
     .scale(scale*1000)
     .translate([width / 2, height / 2]);
 var path = d3.geoPath()
             .projection(projection);
-
 var colorScale = d3.scaleThreshold();
-
 var long_data = [];
 var datatype;
 var promises = [
@@ -442,9 +403,7 @@ var promises = [
   d3.csv("linearregline.csv"),
   d3.csv("SeasonalchangeR.csv")
 ]
-
 Promise.all(promises).then(ready)
-
 function ready([us,alldata,/*diffdata, tmaxclusterdata,prcpclusterdata,*/
 tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,linreg,seasonalchange]) {
   
@@ -453,24 +412,21 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
   //console.log("in promises")
   var historyend = 2016
   var historystart = 1950
-  data = alldata.filter((function(t){return t.Year <= "2039";}))
+  data = alldata.filter((function(t){return t.Year <= "2040";}))
   var miny = d3.min(data, function(d) { return +d.Year; });
   var maxy = d3.max(data, function(d) { return +d.Year; });
   var minMAXT = d3.min(data, function(d) { return +d.V_HW_Tmax_F; });
   var maxMAXT = d3.max(data, function(d) { return +d.V_HW_Tmax_F; });
   var maxPRCP= d3.max(data, function(d) { return +d.V_HW_Precipitation_inch; });
-
   
  // console.log(seasonalchange)
   var interval = maxy - miny;
-
   //console.log(miny, maxy)
   //console.log(minMAXT,maxMAXT,maxPRCP)
   //console.log(miny+nyears)
     //Start and End of slider
   var startDate = new Date(miny,0,1),
       endDate = new Date(maxy,0,1);    
-
   var x = d3.scaleTime()
       .domain([startDate, endDate])
       .range([0, targetValue])
@@ -486,7 +442,6 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
                             
                         };
                         })  
-
         .entries(data);
         var mintemp = 200
         var maxtemp = 0
@@ -519,9 +474,7 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
                         };
                         })  
         .entries(diffdata);
-
        //console.log(diffyearlydata)
-
         var diffmintemp = 200
         var diffmaxtemp = 0
         var diffyearlyflat = []
@@ -540,38 +493,30 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
     //-------------dropdown update
     //console.log(linreg)
     
-
     // linear regression
     var trend =[]
     for(let i = 0; i < linreg.length; i++)
     {
     //console.log(linreg[i])
-
     trend.push({
       State: linreg[i].State, tmaxIntercept: linreg[i].tmaxIntercept,tmaxSlope:linreg[i].tmaxSlope, tmaxChange: Math.round((2016-1950)*linreg[i].tmaxSlope*10)/10,
       prcpIntercept: linreg[i].prcpIntercept,prcpSlope:linreg[i].prcpSlope, prcpChange: Math.round((historyend-historystart)*linreg[i].prcpSlope*10)/10,
       });
     }
     //console.log(trend)
-
-
-
     factor = factorsList[1];
     var tooltiptext;
     
     maxt = d3.max(yearlyflat, function(d) { return d.tmax; });
     mint = Math.floor(d3.min(yearlyflat, function(d) { return d.tmax; })/10)*10;
-
     maxtc = d3.max(trend, function(d) { return d.tmaxChange; });
     mintc = Math.floor(d3.min(trend, function(d) { return d.tmaxChange; })/100)*100;
-
     maxpc = Math.ceil(d3.max(trend, function(d) { return d.prcpChange; }));
     minpc = Math.floor(d3.min(trend, function(d) { return d.prcpChange; }));
     
     maxp = d3.max(yearlyflat, function(d) { return d.prcp; });
     minp = Math.floor(d3.min(yearlyflat, function(d) { return d.prcp; })/100)*100;
     //console.log(mint, maxt,minp, maxp, mintc, maxtc,minpc, maxpc)
-
     // initialize
     colorScale.domain(d3.range(mint, maxt, 10));
     colorScale.range(d3.schemeOranges[9]);
@@ -582,7 +527,6 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
     
     //cdata = clusterdata.filter(function(t){return t.Month == "Jul" && t.Year == "2019";})
     cdata = []
-
     var dropdownChange = function(){
             //console.log(firsttime, factor)
             clusterdata = "no"
@@ -699,14 +643,10 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
                   legendText = "Rain"
                   document.getElementById("monthly").click();
                 }
-
                 //console.log("!!!!!!!")  
                 //cdata = clusterdata.filter(function(t){return t.Month == "Jul" && t.Year == filterYear;})
-
                 var uniqueCluster = [...new Set(cdata.map(item =>+item.cluster))].sort()
-
                 
-
                 if(factor == factorsList[12]){
                   cdata = seasonalchange
                   //console.log(cdata)
@@ -765,7 +705,6 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
                 }
                 console.log("!!!!!!!")
                 cdata = tmaxclusterdata.filter(function(t){return t.Month == "Jul" && t.Year == filterYear;})
-
                 //var uniqueCluster = [...new Set(cdata.map(item =>+item.cluster))]
                // console.log(uniqueCluster)
                // var sortedCluster = uniqueCluster.sort()
@@ -811,7 +750,6 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
             //console.log(cdata)
             updateMap("2016");
             updateLegend();
-
         }
               
         var dropDown = d3.select("#dropdown-container")
@@ -826,7 +764,6 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
                 .data(dropdownlist)
                 .enter()
                 .append("option");
-
         options.text(function(d) {
                     return d;   
                 })
@@ -837,11 +774,10 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
                     return d == factorsList[1];
                 })
                 ;         
-
     
     var tip = d3.tip()
     .attr('class', 'd3-tip')
-    .offset([40, 100])
+    .offset([20, 40])
     .html(function(d) { 
             if (clusterdata=="yes") {
               return  "State: "+d.properties.name + "<br/>"  + tooltiptext+ clusterDesc[d.fact-1] 
@@ -855,7 +791,6 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
     svg.call(tip)
     
  
-
 //slider
     slider.append("line")
     .attr("class", "track")
@@ -872,19 +807,17 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
           update(x.invert(currentValue)); 
         })
     );
-
     slider.insert("g", ".track-overlay")
     .attr("class", "ticks")
-    .attr("transform", "translate(0," + 18 + ")")
+    .attr("transform", "translate(0," + 12 + ")")
   .selectAll("text")
     .data(x.ticks(5))
     .enter()
     .append("text")
     .attr("x", x)
     .attr("y", 10)
-    .attr("text-anchor", "middle")
+    .attr("text-anchor", "end")
     .text(function(d) { return formatDate(d); });
-
     var handle = slider.insert("circle", ".track-overlay")
     .attr("class", "handle")
     .attr("r", 9);
@@ -894,13 +827,11 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
     .attr("text-anchor", "middle")
     .text(formatDate(startDate))
     .attr("transform", "translate(0," + (-25) + ")")
-
 // draw intially
     //console.log(factor)
   dropdownChange()
   //updateMap("2016");
   //updateLegend();
-
 ////--------------update on play
     playButton
         .on("click", function() {
@@ -918,7 +849,6 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
         }
         console.log("Slider moving: " + moving);
     })
-
     function step() {
     //console.log("current value", currentValue,x.invert(currentValue))
     update(x.invert(currentValue));
@@ -932,20 +862,17 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
         console.log("Slider moving: " + moving);
     }
     }
-
     function update(h) {
     // update position and text of label according to slider scale
     handle.attr("cx", x(h));
     label
         .attr("x", x(h))
         .text(formatDate(h));
-
     // filter data set and redraw plot
     console.log("..............inside update")
     console.log(factor)
     updateMap(formatDate(h))
     }
-
 // --------------------------------------------------draw map
     function updateMap(year){
      //   console.log("~~~~~~~~~~");
@@ -1018,7 +945,6 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
                 d.year = year
                 var col = colorScale(d.fact)
                if (col) {
-
                   return col
                 } else {
                   return '#ffffff'
@@ -1040,7 +966,6 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
         )
         .on('click',showstatetrend)
         .append("title") ;
-
        
     svg.append("path")
         .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
@@ -1063,7 +988,7 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
         .attr("y", margin.top/3)
         //.attr("dy", ".35em")
         .attr("text-anchor", "middle")
-        .style("font-size", "20px")
+        .style("font-size", 25*scale+"px")
         .style("font-family", "avenir next")
         .style("fill", "#696969")
         .style("font-weight", "bold")
@@ -1073,7 +998,6 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
     
     
     }
-
 function updateLegend(){
    // d3.selectAll("g.legend").remove();
     var legendX = (width*.83),
@@ -1081,8 +1005,6 @@ function updateLegend(){
    //console.log(scale,width)
     svg.selectAll("g.legend").remove();
     svg.selectAll("text.legend").remove();
-
-
     svg.append("text")
       .attr("class", "legend")
         .attr("x", legendX)
@@ -1106,14 +1028,12 @@ function updateLegend(){
     
     var legendExit = legendUpdate.exit();
     legendExit.remove()
-
     legendUpdate.merge(legendEnter)
         .append("rect")
         .attr("width", 20*scale)
         .attr("height", 30*scale) 
         .style("fill", function(d){ 
                  return (colorScale(d))});
-
     legendUpdate.merge(legendEnter)
         .append("text")
         .attr("x", 25*scale)
@@ -1139,9 +1059,7 @@ function updateLegend(){
         });
         
         }
-
 //---------------------------------------------on click of state
-
     function showstatetrend(d){
       d3.select("#stdropdown").remove()
         function movingAverage(values, N) {
@@ -1183,7 +1101,6 @@ function updateLegend(){
                 return maxpeak
           }
           
-
           function findMinpeak(values){
                 let i = 1;
                 const diffs = new Float64Array(values.length).fill(NaN);
@@ -1207,10 +1124,6 @@ function updateLegend(){
                 minpeak[values.length-1] = min
                 return minpeak
           }
-
-
-
-
         //if (factor != factorsList[2] && factor != factorsList[3] )
         if (true )
         {
@@ -1221,7 +1134,6 @@ function updateLegend(){
                     var st = d.properties.name;        
 //                    var monthly = data.filter(function(t){return t.State == st && t.Year <=2016});
 //                    var yearlySt = yearlyflat.filter(function(t){return t.state == st && t.year <=2016}).sort(function(a, b){ return d3.ascending(a.year, b.year); })
-
                     var monthly = data.filter(function(t){return t.State == st });
                     //console.log(monthly)
                     var yearlySt = yearlyflat.filter(function(t){return t.state == st }).sort(function(a, b){ return d3.ascending(a.year, b.year); })
@@ -1231,7 +1143,6 @@ function updateLegend(){
                     var  x = d3.scaleBand().range([0, width_s]),
                         y = d3.scaleBand().range([0, height_s]),
                         y_yearly = d3.scaleLinear().range([height_s, 0])
-
                     // var seasonalScale = d3.scaleThreshold().range(d3.schemeOrRd[9]);
                     var seasonalScale = d3.scaleThreshold();
                 if (factor == factorsList[0]|| factor == factorsList[6] || factor == factorsList[7]|| factor == factorsList[3]
@@ -1265,23 +1176,21 @@ function updateLegend(){
                             || factor == factorsList[8]||factor == factorsList[10]||factor == factorsList[12]||factor == factorsList[13]||
                                 factor == factorsList[14]||factor == factorsList[15]){
                       datatype = "tmax"
-                      linelegendtext = "Average Change in Max Temparature (1950-2016)"
-                      s_legendtext = "Max Temprature(F)"
-                      yaxislabel = "Max Temprature (F)"
+                      linelegendtext = "Average Change in Max Temperature (1950-2016)"
+                      s_legendtext = "Max Temperature(F)"
+                      yaxislabel = "Max Temperature (F)"
                         //maxs = d3.max(monthly, function(d) { return +d.V_HW_Tmax_F; });
                         //mins = Math.floor(d3.min(monthly, function(d) { return +d.V_HW_Tmax_F; })/10)*10;
                         mins = Math.floor(minMAXT/5)*5
                         maxs   = maxMAXT
                        
                         seasonalScale.domain(d3.range(mins, maxs, seasonaltempinterval));
-
                         seasonalScale.range(d3.range(0, 1, (  seasonaltempinterval-1)/(maxs-mins)));
                         //miny = Math.floor(d3.min(yearlySt, function(d) { return +d.tmax; })/10)*10-10;
                        // maxy = d3.max(yearlySt, function(d) { return +d.tmax; });
                     
                        miny = mint
                        maxy = maxt+5
-
                        var gridlinerange = d3.range(miny, maxy, 5)
                         movingAvgValues = movingAverage(yearlySt.map(d => d.tmax), nyears)
                         maxpeak = findMaxpeak(yearlySt.map(d => d.tmax))
@@ -1309,12 +1218,10 @@ function updateLegend(){
                     y.domain(["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]);
                 // console.log(seasonalScale.domain())
                     //console.log(seasonalScale.range())
-
                     
                     //console.log(movingAvgValues)
                     //console.log(x.domain())
                     var maxpeakresult = [];
-
                     uniqueyear.forEach(function(yr, i){
                         if (!Number.isNaN(maxpeak[i])){
                           // console.log(movingAvgValues[i])
@@ -1323,9 +1230,7 @@ function updateLegend(){
                         })
                     }
                     })
-
                     var minpeakresult = [];
-
                     uniqueyear.forEach(function(yr, i){
                         if (!Number.isNaN(minpeak[i])){
                           // console.log(movingAvgValues[i])
@@ -1335,7 +1240,6 @@ function updateLegend(){
                     }
                     })
                     var movingresult = [];
-
                       uniqueyear.forEach(function(yr, i){
                           if (!Number.isNaN(movingAvgValues[i])){
                             // console.log(movingAvgValues[i])
@@ -1346,8 +1250,6 @@ function updateLegend(){
                       })
                   
                     //console.log(minpeakresult);
-
-
             var seasonalColorCode = function(d){
             //    console.log("inside seasonalColorCode")
              //    console.log(d)
@@ -1363,8 +1265,6 @@ function updateLegend(){
                         }
             
             }
-
-
                 var tilepadding = .0005;
                     var svg_s = d3.select("#chart2")
                         .append("svg")
@@ -1379,19 +1279,13 @@ function updateLegend(){
                     .scale(x)
                     .tickValues(x.domain().filter((d, i) => d % 10 === 0))
                     .tickSizeOuter(0)
-
                     //var xAxisHandleForUpdate = svg_s.append("g")
                     svg_s.append("g")      
                             .attr("class", "x axis")
                             .attr("transform", "translate(0," + height_s + ")")
                             .call(xAxis);
-
                     var yAxis = d3.axisLeft().scale(y).tickSizeOuter(0);
-
-
-
                         
-
                     //console.log (xt.domain())
                     // Render the data in an svg:
                     svg_s.selectAll("svg")
@@ -1428,7 +1322,7 @@ function updateLegend(){
                             .attr("y", -margin_s.top/5)
                             .attr("text-anchor", "middle")
                             .attr("font-family", "sans-serif")
-                            .attr("font-size", "15px")
+                            .attr("font-size", 15*scale+"px")
                             .attr("font-weight", "bold")
                             .attr("fill", "black")
                             .text(function(d){
@@ -1462,7 +1356,7 @@ function updateLegend(){
                         .attr("y", -margin_s.top/2)
                         .attr("text-anchor", "middle")
                         .attr("class", "title")
-                        .style("font-size", "20px")
+                        .style("font-size", 25*scale+"px")
                         .style("font-family", "avenir next")
                         .style("fill", "#696969")
                         .style("font-weight", "bold")
@@ -1478,13 +1372,10 @@ function updateLegend(){
                         .attr("text-anchor", "end")
                         .attr("transform", "rotate(-90)")
                         .text("Value");
-
-
                     
             //Legend
             var legendX_s = scale*margin_s.left/10,
                     legendY_s = height_s+(margin_s.bottom)/2;
-
                 svg_s.append("text")
                     .attr("x", legendX_s)
                     .attr("y", legendY_s - 15)
@@ -1493,7 +1384,6 @@ function updateLegend(){
                     .attr("font-weight","bold")
                     //.text(String);
                     .text(s_legendtext);
-
                 var legendUpdate = svg_s.selectAll("g.legend")
                     .data(seasonalScale.domain());
                 var legendEnter = legendUpdate.enter().append("g")
@@ -1503,7 +1393,6 @@ function updateLegend(){
                 
                 var legendExit = legendUpdate.exit();
                 legendExit.remove()
-
                 legendUpdate.merge(legendEnter)
                     .append("rect")
                     .attr("width", 30*scale)
@@ -1518,7 +1407,6 @@ function updateLegend(){
                         }
                     
                         });
-
                 legendUpdate.merge(legendEnter)
                     .append("text")
                     .attr("x", 0)
@@ -1536,7 +1424,6 @@ function updateLegend(){
                         .attr("height", height_s + margin_s.top + margin_s.bottom) 
                         .append("g")
                         .attr("transform", "translate(" + margin_s.left + "," + margin_s.top + ")");
-
         var line1 = d3.line()
             .x(function(d, i) { return x(+d.year); }) // set the x values for the line generator
             .y(function(d) { 
@@ -1549,7 +1436,6 @@ function updateLegend(){
                 })                 // set the y values for the line generator 
             .curve(d3.curveMonotoneX) // apply smoothing to the line
             
-
         var line2 = d3.line()
             .x(function(d, i) { return x(d.year); }) // set the x values for the line generator
             .y(function(d) { 
@@ -1557,7 +1443,6 @@ function updateLegend(){
                     }
             )                 // set the y values for the line generator 
             .curve(d3.curveMonotoneX) // apply smoothing to the line
-
         var line3 = d3.line()
             .x(function(d, i) { return x(d.year); }) // set the x values for the line generator
             .y(function(d) { 
@@ -1583,8 +1468,6 @@ function updateLegend(){
                             .scale(x)
                             .tickValues(x.domain().filter((d, i) => d % 10 === 0))
                             .tickSizeOuter(0);
-
-
             // gridlines in x axis function
                         function make_x_gridlines() {		
                             return d3.axisBottom(x)
@@ -1592,7 +1475,6 @@ function updateLegend(){
                                .tickValues(x.domain().filter((d, i) => d % 10 === 0))
                                .tickSizeOuter(0)
                         }
-
                         // gridlines in y axis function
                         function make_y_gridlines() {		
                             return d3.axisLeft(y_yearly)
@@ -1601,7 +1483,6 @@ function updateLegend(){
                             .tickValues(gridlinerange)
                             .tickSizeOuter(0)
                         }
-
                //         console.log(x.domain().filter((d, i) => d % 10 === 0))
             //console.log(y_yearly.domain())
             yearlyStHist = yearlySt.filter((function(t){return t.year <= 2016 }))
@@ -1610,7 +1491,6 @@ function updateLegend(){
                 .attr("class", "line") // Assign a class for styling 
                 .style('stroke',linecolor)
                 .style("stroke-width",1)
-
               /*  .style("stroke-dasharray",function(d){
                     console.log(d)
                     if(+d.Year>2019){
@@ -1665,7 +1545,6 @@ function updateLegend(){
                 .style('fill',"none")
                 //.attr("fake",function(d){console.log(d)})
                 .attr("d", line3); // Calls the line generator 
-
         svg_y.append("path")
                 .datum(minpeakresult) //  Binds data to the line 
                 .attr("class", "line4") // Assign a class for styling 
@@ -1681,14 +1560,11 @@ function updateLegend(){
                     .attr("transform", "translate(0," + height_s + ")")
                     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
                     .call(xAxis);
-
         //Create Y axis
             svg_y.append("g")
                     .attr("class", "axis")
                 // .attr("transform", "translate(" + padding + ",0)")
                     .call(yAxis);
-
-
           // add the X gridlines
             svg_y.append("g")			
                 .attr("class", "grid")
@@ -1697,7 +1573,6 @@ function updateLegend(){
                     .tickSize(-height_s)
                     .tickFormat("")
                 )
-
             // add the Y gridlines
             svg_y.append("g")			
                 .attr("class", "grid")
@@ -1706,27 +1581,21 @@ function updateLegend(){
                     .tickFormat("")
                 )
             
-
-
-
             // Add the title:
             svg_y.append("text")
                 .attr("x", (width_s / 2))             
                 .attr("y", -margin_s.top/2)
                 .attr("text-anchor", "middle")
                 .attr("class", "title")
-                .style("font-size", "20px")
+                .style("font-size", 25*scale+"px")
                 .style("font-family", "avenir next")
                 .style("fill", "#696969")
                 .style("font-weight", "bold")
                 .text("Yearly Trend for " + st +" - " + title);
-
             // apply the reults of the least squares regression
             var reg = trend.filter(function(t){return t.State == st });
             var x1 = 1950;
             var x2 = 2016;
-
-
            // console.log(trendData)  
           //console.log(datatype, reg[0].prcpIntercept)
            if (datatype == "tmax"){
@@ -1742,7 +1611,6 @@ function updateLegend(){
               y2 = +reg[0].prcpIntercept + change;
             //  console.log(y1,y2)
            }
-
            if (change > 0)
            {
              changetext = "+" + Math.round( change * 10 ) / 10
@@ -1751,7 +1619,6 @@ function updateLegend(){
            {
             changetext = Math.round( change * 10 ) / 10
            }
-
            var trendData = [[x1,y1,x2,y2]];
            //console.log(trendData)
             var trendline = svg_y.selectAll(".trendline")
@@ -1766,15 +1633,13 @@ function updateLegend(){
               .attr("y2", function(d) { return y_yearly(d[3]); })
               .attr("stroke", linecolor)
               .attr("stroke-width", 2.5);
-
           */
-
           svg_y.append("text")
               .attr("x", width_s*.05-10)             
                 .attr("y", height_s+50)
                 .attr("text-anchor", "start")
                 .attr("class", "sttitle")
-                .style("font-size", "15px")
+                .style("font-size", 20*scale+"px")
                 .style("font-family", "Avenir")
                 .style("fill", "black")
                 .style("text-decoration", "underline")
@@ -1785,22 +1650,20 @@ function updateLegend(){
                 .attr("y", height_s+70)
                 .attr("text-anchor", "start")
                 .attr("class", "sttitle")
-                .style("font-size", "20px")
+                .style("font-size", 20*scale+"px")
                 .style("font-family", "Avenir")
                 .style("fill", linecolor)
                 .text(changetext);
-
               // Add the State Legend:
               svg_y.append("text")
                 .attr("x", width_s*.05)             
                 .attr("y", height_s+70)
                 .attr("text-anchor", "start")
                 .attr("class", "legendst")
-                .style("font-size", "20px")
+                .style("font-size", 20*scale+"px")
                 .style("font-family", "Avenir")
                 .style("fill", linecolor)
                 .text(st);
-
       svg_y.append("text")
        .attr("transform", "rotate(-90)") 
        .attr("x", 0 - height_s/2 ) 
@@ -1810,14 +1673,13 @@ function updateLegend(){
         .text(yaxislabel)
         .attr("text-anchor", "middle")
         .style("alignment-baseline", "central")
-
           //Add the line Legend:
               svg_y.append("text")
                 .attr("x", width_s*.05+390)             
                 .attr("y", height_s+75)
                 .attr("text-anchor", "start")
                 .attr("class", "legendhist")
-                .style("font-size", "14px")
+                .style("font-size", 20*scale+"px")
                 .style("font-family", "Avenir")
                 .style("fill", linecolor)
                 .text("Historical");
@@ -1836,14 +1698,13 @@ function updateLegend(){
               .attr("y2", function(d) { return d[3]; })
               .attr("stroke", linecolor)
               .attr("stroke-width", 2);
-
           //Add the line Legend:
           svg_y.append("text")
                 .attr("x", width_s*.05+390)             
                 .attr("y", height_s+50)
                 .attr("text-anchor", "start")
                 .attr("class", "legendhist")
-                .style("font-size", "14px")
+                .style("font-size", 20*scale+"px")
                 .style("font-family", "Avenir")
                 .style("fill", linecolor)
                 .text("Forecasted");
@@ -1864,19 +1725,14 @@ function updateLegend(){
               .style("stroke-dasharray","3,3")
               .attr("stroke-width", 2);
  
-
       //state dropdown change
       var statedropdownChange = function(){
               console.log("instate drop down")
               newstate = d3.select(this).property('value');
           
           var yearlynewSt = yearlyflat.filter(function(t){return t.state == newstate }).sort(function(a, b){ return d3.ascending(a.year, b.year); })
-
-
           // draw compare line
             comparelinecolor = "gray"
-
-
             d3.selectAll(".ctrendline").remove();
             
             d3.selectAll(".legendsnewst").remove();
@@ -1891,7 +1747,6 @@ function updateLegend(){
                 .style('fill',"none")
                 //.attr("fake",function(d){console.log(d)})
                 .attr("d", line1); // Calls the line generator 
-
             yearlynewStforecast = yearlynewSt.filter((function(t){return t.year >= 2016 }))
             svg_y.append("path")
                 .datum(yearlynewStforecast) //  Binds data to the line 
@@ -1903,7 +1758,6 @@ function updateLegend(){
                 //.attr("fake",function(d){console.log(d)})
                 .attr("d", line1)
                 ;
-
           //compare line trend
           // apply the reults of the least squares regression
           var comparereg = trend.filter(function(t){return t.State == newstate });
@@ -1934,7 +1788,6 @@ function updateLegend(){
            {
             comparechangetext = Math.round( comparechange * 10 ) / 10
            }
-
             var ctrendData = [[cx1,cy1,cx2,cy2]];
             console.log(ctrendData)  
             
@@ -1970,7 +1823,7 @@ function updateLegend(){
                 .attr("y", height_s+70+20)
                 .attr("text-anchor", "start")
                 .attr("class", "legendsnewst")
-                .style("font-size", "20px")
+                .style("font-size", 20*scale+"px")
                 .style("font-family", "Avenir")
                 .style("fill", comparelinecolor)
                 .text(newstate);
@@ -1980,11 +1833,10 @@ function updateLegend(){
                 .attr("y", height_s+70+20)
                 .attr("text-anchor", "start")
                 .attr("class", "newstchange")
-                .style("font-size", "20px")
+                .style("font-size", 20*scale+"px")
                 .style("font-family", "Avenir")
                 .style("fill", comparelinecolor)
                 .text(comparechangetext);
-
             }  
         var statedropDown = d3.select("#state-dropdown-container")
                         .append("select")
@@ -2010,15 +1862,10 @@ function updateLegend(){
                 ;  
     
             
-
-
         }
         
     }
     //<<<<<<<<<<<<End of Ready functions
 }
-
-
-
 </script>
 </body>
