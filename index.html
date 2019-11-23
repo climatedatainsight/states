@@ -158,7 +158,7 @@ body {
   width:50%; /* The width is 20%, by default */
 }
 /* Use a media query to add a break point at 800px: */
-@media screen and (max-width:900px) {
+@media screen and (max-width:300px) {
   .left,  .right {
     width:100%; /* The width is 100%, when the viewport is 800px or smaller */
   }
@@ -554,7 +554,7 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
                 colorScale.domain(d3.range(mint, maxt, 10));
                 colorScale.range(d3.schemeOranges[7]);
                 tooltiptext = "Max Temp: "
-                legendText = "Temperature  (F)"
+                legendText = "Temp (F)"
                 maptitle = "Max Temperature for " 
                 document.getElementById("slideranimation").style.display = "block";
                 document.getElementById("monthly").click();
@@ -564,8 +564,8 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
                 clusterdata = "change"
                 colorScale.domain(d3.range(mintc, maxtc, 3));
                 colorScale.range(["",d3.schemeOranges[6][0],d3.schemeOranges[6][2],d3.schemeOranges[6][4]]);
-                tooltiptext = "Increase in Max Temp:";
-                legendText = "Increase in Max Temp"
+                tooltiptext = "Max Temp Increase:";
+                legendText = "Max Temp Increase:"
                 legendDesctext = ["0 to +2 Degrees","+3 to +5 Degrees","+6 to +8 Degrees"]
                 document.getElementById("slideranimation").style.display = "none";
                 document.getElementById("yearly").click();
@@ -575,8 +575,8 @@ tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,li
               clusterdata = "change"
                 colorScale.domain(d3.range(minpc, maxpc, 3));
                 colorScale.range(["",d3.schemeOranges[6][1],d3.schemeBlues[6][1],d3.schemeBlues[6][4]]);
-                tooltiptext = "Change in Total Rain: ";
-                legendText = "Change in Total Rain"
+                tooltiptext = "Rain: ";
+                legendText = "Rain"
                 legendDesctext = ["-4 to -2 in.","-1 to +1 in.","+2 to +4 in."]
                 document.getElementById("slideranimation").style.display = "none";
                 document.getElementById("yearly").click();
@@ -1008,8 +1008,8 @@ function updateLegend(){
     svg.append("text")
       .attr("class", "legend")
         .attr("x", legendX)
-        .attr("y", legendY-15)
-        .attr("dy", ".35em")
+        .attr("y", legendY-10*scale)
+        .attr("font-size",15*scale)
         .attr("text-anchor", "start")
        // .attr("font-weight","bold")
         //.text(String);
@@ -1037,8 +1037,8 @@ function updateLegend(){
     legendUpdate.merge(legendEnter)
         .append("text")
         .attr("x", 25*scale)
-        .attr("y", 8*scale)
-        .attr("dy", ".35em")
+        .attr("y", 18*scale)
+        //.attr("dy", ".35em")
         .attr("font-size",14*scale)
         .attr("text-anchor", "start")
         //.text(String);
@@ -1206,11 +1206,11 @@ function updateLegend(){
                // console.log(".............") 
                // console.log(mins, maxs, miny, maxy)
                     
-               console.log("seasonal scale")
+              // console.log("seasonal scale")
                  
                 //console.log(d3.range(0, 1, seasonaltempinterval/(maxs-mins)));
-                console.log(seasonalScale.range())
-                console.log(seasonalScale.domain())
+               // console.log(seasonalScale.range())
+                //console.log(seasonalScale.domain())
                 
                     x.domain(uniqueyear);
                   // xt.domain(monthly.map( function (d) { return (+d.Year); }).sort());
@@ -1379,7 +1379,7 @@ function updateLegend(){
                 svg_s.append("text")
                     .attr("x", legendX_s)
                     .attr("y", legendY_s - 15)
-                    .attr("dy", ".35em")
+                    .attr("font-size",15*scale)
                     .attr("text-anchor", "start")
                     .attr("font-weight","bold")
                     //.text(String);
@@ -1399,7 +1399,7 @@ function updateLegend(){
                     .attr("height", 20*scale) 
                     .style("fill", function(d){ 
                         if(datatype == "tmax"){
-                          console.log( d,seasonalScale(d),(1-seasonalScale(d)),d3.interpolateSpectral(1-seasonalScale(d)))
+                   //       console.log( d,seasonalScale(d),(1-seasonalScale(d)),d3.interpolateSpectral(1-seasonalScale(d)))
                             return (d3.interpolateSpectral(1-seasonalScale(d)))
                         }
                         else if(datatype == "prcp"){
@@ -1636,7 +1636,7 @@ function updateLegend(){
           */
           svg_y.append("text")
               .attr("x", width_s*.05-10)             
-                .attr("y", height_s+50)
+                .attr("y", height_s+(50*scale))
                 .attr("text-anchor", "start")
                 .attr("class", "sttitle")
                 .style("font-size", 20*scale+"px")
@@ -1646,8 +1646,8 @@ function updateLegend(){
                 .text(linelegendtext);              // Add the TEMP CHANGE:
             
               svg_y.append("text")
-              .attr("x", width_s*.05+200)             
-                .attr("y", height_s+70)
+              .attr("x", width_s*.05+(200*scale))             
+                .attr("y", height_s+(70*scale))
                 .attr("text-anchor", "start")
                 .attr("class", "sttitle")
                 .style("font-size", 20*scale+"px")
@@ -1657,7 +1657,7 @@ function updateLegend(){
               // Add the State Legend:
               svg_y.append("text")
                 .attr("x", width_s*.05)             
-                .attr("y", height_s+70)
+                .attr("y", height_s+(70*scale))
                 .attr("text-anchor", "start")
                 .attr("class", "legendst")
                 .style("font-size", 20*scale+"px")
@@ -1675,7 +1675,7 @@ function updateLegend(){
         .style("alignment-baseline", "central")
           //Add the line Legend:
               svg_y.append("text")
-                .attr("x", width_s*.05+390)             
+                .attr("x", width_s*.05+(390*scale))             
                 .attr("y", height_s+75)
                 .attr("text-anchor", "start")
                 .attr("class", "legendhist")
@@ -1700,8 +1700,8 @@ function updateLegend(){
               .attr("stroke-width", 2);
           //Add the line Legend:
           svg_y.append("text")
-                .attr("x", width_s*.05+390)             
-                .attr("y", height_s+50)
+                .attr("x", width_s*.05+(390*scale))             
+                .attr("y", height_s+(50*scale))
                 .attr("text-anchor", "start")
                 .attr("class", "legendhist")
                 .style("font-size", 20*scale+"px")
@@ -1820,7 +1820,7 @@ function updateLegend(){
               // Add the newState Legend:
               svg_y.append("text")
                 .attr("x", width_s*.05)             
-                .attr("y", height_s+70+20)
+                .attr("y", height_s+((70+20)*scale))
                 .attr("text-anchor", "start")
                 .attr("class", "legendsnewst")
                 .style("font-size", 20*scale+"px")
@@ -1829,8 +1829,8 @@ function updateLegend(){
                 .text(newstate);
             
              svg_y.append("text")
-              .attr("x", width_s*.05+ 200)             
-                .attr("y", height_s+70+20)
+              .attr("x", width_s*.05+ (200*scale))             
+                .attr("y", height_s+((70+20)*scale))
                 .attr("text-anchor", "start")
                 .attr("class", "newstchange")
                 .style("font-size", 20*scale+"px")
