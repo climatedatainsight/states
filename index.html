@@ -158,7 +158,7 @@ body {
   width:50%; /* The width is 20%, by default */
 }
 /* Use a media query to add a break point at 800px: */
-@media screen and (max-width:300px) {
+@media screen and (max-width:800px) {
   .left,  .right {
     width:100%; /* The width is 100%, when the viewport is 800px or smaller */
   }
@@ -327,13 +327,17 @@ var factorsList = [
 var dropdownlist = [factorsList[1],factorsList[2],factorsList[12],factorsList[15],factorsList[10],factorsList[8],
                   factorsList[0],factorsList[3],factorsList[11],factorsList[9]]
 var seasonaltempinterval = 10
-var winwidth = window.innerWidth,
-    winheight = window.innerHeight;
+var winwidth = window.innerWidth 
+      || document.documentElement.clientWidth
+      || document.body.clientWidth;
+    winheight = window.innerHeight
+    || document.documentElement.clientHeight
+    || document.body.clientHeight;
     console.log(winwidth,winheight)
-  if(winwidth>900) {
+  if(winwidth>800) {
     var wd = winwidth/2;
     }
-    if(winwidth<=900) {
+    if(winwidth<=800) {
     var wd = winwidth;
     }
 var scale = wd/960;
@@ -1675,8 +1679,8 @@ function updateLegend(){
         .style("alignment-baseline", "central")
           //Add the line Legend:
               svg_y.append("text")
-                .attr("x", width_s*.05+(390*scale))             
-                .attr("y", height_s+75)
+              .attr("x", width_s*.05+(60*scale))             
+                .attr("y",-10*scale)
                 .attr("text-anchor", "start")
                 .attr("class", "legendhist")
                 .style("font-size", 20*scale+"px")
@@ -1684,7 +1688,7 @@ function updateLegend(){
                 .style("fill", linecolor)
                 .text("Historical");
           
-          var histlegendData = [[width_s*.05+350,height_s+70,width_s*.05+350+35,height_s+70]];
+          var histlegendData = [[width_s*.05,-10*scale,width_s*.05+(40*scale),-10*scale]];
            //console.log(trendData)
             var histline = svg_y.selectAll(".histline")
               .data(histlegendData);
@@ -1699,9 +1703,10 @@ function updateLegend(){
               .attr("stroke", linecolor)
               .attr("stroke-width", 2);
           //Add the line Legend:
+          
           svg_y.append("text")
-                .attr("x", width_s*.05+(390*scale))             
-                .attr("y", height_s+(50*scale))
+                .attr("x", width_s*.05+((60+300)*scale))             
+                .attr("y",-10*scale)
                 .attr("text-anchor", "start")
                 .attr("class", "legendhist")
                 .style("font-size", 20*scale+"px")
@@ -1709,7 +1714,7 @@ function updateLegend(){
                 .style("fill", linecolor)
                 .text("Forecasted");
           
-          var forecastlegendData = [[width_s*.05+350,height_s+50,width_s*.05+350+35,height_s+50]];
+          var forecastlegendData = [[width_s*.05 + 300*scale,-10*scale,width_s*.05+((40+300)*scale),-10*scale]];
            //console.log(trendData)
             var forecastline = svg_y.selectAll(".forecastline")
               .data(forecastlegendData);
