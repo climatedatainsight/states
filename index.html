@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+<style>
+
+
+.states {
+  fill: none;
+  
+}
+
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.3;
+}
+.grid path {
+      stroke-width: 0.5;
+}
+.statesline {
+  fill: none;
+  stroke:lightgray;
+  stroke-linejoin: round;
+  
+}
+.d3-tip {
+  line-height: 1;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+
+}
+body {
+      font-family:"avenir next", Arial, sans-serif;
+      font-size: 14px;
+      color: #696969;
+    }
+
+    #play-button {
+      position: absolute;
+      
+      background: #f08080;
+      padding-right: 26px;
+      border-radius: 3px;
+      border: none;
+      color: white;
+      margin: 0;
+      padding: 0 12px;
+      width: 60px;
+      cursor: pointer;
+      height: 30px;
+    }
+
+    #play-button:hover {
+      background-color: #696969;
+    }    
+    
+    .ticks {
+      font-size: 10px;
+    }
+
+    .track,
+    .track-inset,
+    .track-overlay {
+      stroke-linecap: round;
+    }
+
+    .track {
+      stroke: #000;
+      stroke-opacity: 0.3;
+      stroke-width: 10px;
+    }
+
+    .track-inset {
+      stroke: #dcdcdc;
+      stroke-width: 8px;
+    }
+
+    .track-overlay {
+      pointer-events: stroke;
+      stroke-width: 10px;
+      stroke: transparent;
+      cursor: crosshair;
+    }
+
+    .handle {
+      fill: #fff;
+      stroke: #000;
+      stroke-opacity: 0.5;
+      stroke-width: 1.25px;
+    }
+
+    .tile {
+    shape-rendering: crispEdges;
+  }
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+    
+  }
+  .row {
+  display: flex;
+  }
+
+  .column {
+    flex: 50%;
+  }
+  
+  /* Style the tab */
+  .tab {
+    overflow: hidden;
+    font-weight: normal;
+    background-color: lightcyan;
+    font-family:"avenir next", Arial, sans-serif;
+      font-size: 20px;
+  }
+
+  /* Style the buttons that are used to open the tab content */
+  .tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-family:"avenir next", Arial, sans-serif;
+      font-size: 14px;
+  }
+
+ /* Change background color of buttons on hover */
+.tablink:hover {
+  background-color: #777;
+}
+
+  /* Create an active/current tablink class */
+  .tab button.active {
+    background-color:skyblue;
+    font-weight: bold;
+    
+  }
+
+
+
+
+  /* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  /*border: 1px solid #ccc;*/
+  border-top: none;
+}
+/* Style the tab buttons */
+.tablinks {
+  background-color: lightgray;
+  color:black;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 10px 10px;
+  font-size: 15px;
+  width: 50%;
+}
+
+
+/* left - right */
+.left {
+ /* background-color:#2196F3;*/
+  
+  float:left;
+  width:50%; /* The width is 20%, by default */
+}
+
+
+
+.right {
+ /* background-color:#4CAF50;*/
+ 
+  float:left;
+  width:50%; /* The width is 20%, by default */
+}
+
+/* Use a media query to add a break point at 800px: */
+@media screen and (max-width:800px) {
+  .left,  .right {
+    width:100%; /* The width is 100%, when the viewport is 800px or smaller */
+  }
+}
+
+
+
+</style>
+
+
+<script src="lib/d3.v5.min.js"></script>
+<script src="lib/d3-dsv.min.js"></script>
+<script src="lib/d3-scale-chromatic.v1.min.js"></script>
+<script src="lib/d3-fetch.min.js"></script>
+<script src="lib/topojson.v2.min.js"></script>
+<script src="d3.button.js"></script>
+<script src="lib/d3-tip.min.js"></script>
+</head>
+<body>
+    <div id="state" class = "left">
+        <h2> Climate Data Insights for the Contiguous United States (1950 - 2038)</h2>
+        <p>Leveraging Machine Learning algorithms, the Interactive visualizations on this page let's you demystify the impacts of climate change on individual states and explore patterns in those changes. 
+            You can click on states to further drill down monthly and yearly trend in Max Temprature and Precipitation.
+
+            </p>
+          
+        </p>
+          <div id="dropdown-container">
+            <h4>Choose an option to explore: </h4>
+          </div>  
+          <h3<>  </h3>
+         <!----   <h4>Click on a state to explore seasonal and yearly trend</h4>
+         -->
+          <div id="map"></div>
+  
+          <div id="slideranimation">
+                 
+                <div id="slider"> </div>
+                <button id="play-button">Play</button> 
+               
+          </div>
+              
+    </div>
+    <div id = "details" class = "right">
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'chart2')" id="monthly">Monthly Trend</button>
+            <button class="tablinks" onclick="openTab(event, 'chart1')" id="yearly">Yearly Trend</button>
+            
+          </div>   
+      <div id="chart1" class="tabcontent">
+        <div id="state-dropdown-container"><h4> Compare a state:</h4></div> 
+      </div>
+      <div id="chart2" class="tabcontent">
+          <p>A simple line chart doesn't tell the whole story. This innovative Heatmap chart helps in the understanding of seasonal shifts in climate. 
+            Change on Horizontal axis captures the yearly trend and color changes across Vertical axis explains the shifts across months (seasons)
+             </p>
+      </div>
+
+    </div>
+      
+
+  <div class="row">
+    <div class="column">
+
+    
+    <div class="column">
+  
+    </div>
+  </div>
+  </div>
+  
+  
+
+        <!--svg width="960" height="600"></svg-->
+<script>
+  //Tab management
+  function openTab(evt, Name) {
+  //  console.log("inside openTab");
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+   //   console.log("inside openTab - replace");
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(Name).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+  document.getElementById("monthly").click();
+  document.getElementById("details").style.display = "none";
+
+    function responsivefy(svg) {
+    // container will be the DOM element
+    // that the svg is appended to
+    // we then measure the container
+    // and find its aspect ratio
+    const container = d3.select(svg.node().parentNode),
+        width = parseInt(svg.style('width'), 10),
+        height = parseInt(svg.style('height'), 10),
+        aspect = width / height;
+  
+    // set viewBox attribute to the initial size
+    // control scaling with preserveAspectRatio
+    // resize svg on inital page load
+    svg.attr('viewBox', `0 0 ${width} ${height}`)
+        .attr('preserveAspectRatio', 'xMinYMid')
+        .call(resize);
+  
+    // add a listener so the chart will be resized
+    // when the window resizes
+    // multiple listeners for the same event type
+    // requires a namespace, i.e., 'click.foo'
+    // api docs: https://goo.gl/F3ZCFr
+    d3.select(window).on(
+        'resize.' + container.attr('id'), 
+        resize
+    );
+  
+    // this is the code that resizes the chart
+    // it will be called on load
+    // and in response to window resizes
+    // gets the width of the container
+    // and resizes the svg to fill it
+    // while maintaining a consistent aspect ratio
+    function resize() {
+        const w = parseInt(container.style('width'));
+        svg.attr('width', w);
+        svg.attr('height', Math.round(w / aspect));
+    }
+  }
+var factor;
+var clusterdata = "";
+var maptitle = "";
+var maptitlecombined = "";
+var factorsList = [
+                    "Change in total precipitation (1950 - 2038)",                           //0
+                    "Change in max temperature (1950 - 2038)",                               //1
+                    "Grouping of states based on max temperature changes (1950 - 2016)",               //2
+                    "Grouping of states based on total precipitation changes (1950 - 2016)",               //3
+                    "Deprecated - Change in Max Temp - 1970 to 2019",                                    //4
+                    "Deprecated - Change in Max Temp - 2019 to 2070",                                    //5
+                    "Deprecated - Change in Annual Precipitation - 1970 to 2019",                       //6
+                    "Deprecated - Change in Annual Precipitation - 2019 to 2070",                       //7
+                    "Grouping of states based on intensity of winter",                         //8
+                    "Grouping of states based on seasonal variation of rainfall",        //9
+                    "Grouping of states based on intensity of summer",                          //10
+                    "Grouping of states based on total rainfall",                           //11
+                    "States experiencing an earlier summer (i.e. hotter May)",                                       //12  
+                    "Deprecated - Is the Summer ending Late for your State",                                            //13
+                    "Deprecated - Is the Winter starting late for your State",                                         //14
+                    "States experiencing an earlier spring (i.e. warmer March)"                                            //15
+                    ];
+var dropdownlist = [factorsList[1],factorsList[2],factorsList[12],factorsList[15],factorsList[10],factorsList[8],
+                  factorsList[0],factorsList[3],factorsList[11],factorsList[9]]
+
+var seasonaltempinterval = 10
+var winwidth = window.innerWidth,
+    winheight = window.innerHeight;
+  if(winwidth>850) {
+    var wd = winwidth/2;
+    }
+    if(winwidth<=850) {
+    var wd = winwidth;
+    }
+var scale = wd/960;
+var margin = {top: 20, right: 5, bottom: 5, left: 10};
+var margin_s = {top: 100, right: 20, bottom: 100, left: 60};
+var width = wd - margin.left - margin.right,
+  height = 560*scale - margin.top - margin.bottom;
+
+ var width_s = wd - margin_s.left - margin_s.right,
+    height_s = wd*.5 - margin.top - margin.bottom;
+////////////----------------------------------------------------------------slider
+var formatDateIntoYear = d3.timeFormat("%Y");
+var formatDate = d3.timeFormat("%Y");
+var parseDate = d3.timeParse("%m/%d/%y");
+var parseYear = d3.timeParse("%Y");
+var nyears = 3; // moving average
+
+var moving = false;
+var currentValue = 0;
+var targetValue = width;
+
+var playButton = d3.select("#play-button")
+                    .attr("top",margin.top+margin.bottom)
+                    .attr("left",margin.left)
+                    //top: 150px;
+                    // left: 10px;
+                    ;
+
+var svgslider = d3.select("#slider")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height/25 + margin.top + margin.bottom); 
+var slider = svgslider.append("g")
+    .attr("class", "slider")
+    .attr("transform", "translate(" + margin.left + "," + 10 + ")");
+
+
+////
+
+
+/////-------------------------------------------------------------------------- Map
+var svg = d3.select("#map")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .call(responsivefy)
+        ;
+
+
+var projection = d3.geoAlbersUsa()
+    .scale(scale*1000)
+    .translate([width / 2, height / 2]);
+var path = d3.geoPath()
+            .projection(projection);
+
+var colorScale = d3.scaleThreshold();
+
+var long_data = [];
+var datatype;
+var promises = [
+  //d3.json("https://d3js.org/us-10m.v1.json"),
+  d3.json("states-10m.json"),
+  //d3.csv("2014_2018_Cleaned_max_tmax1.csv"),
+  //d3.csv("1970_2070_Tmax_Precip_clean.csv"),
+  //d3.csv("CLEAN 1950 to 2019.csv"),
+  //d3.csv("1970_2039.csv"),
+  //d3.csv("1970_2068_Combined_10_50_90_variable.csv"),
+ // d3.csv("Output with Variable p60.csv"),
+  d3.csv("Output with Variable HW.csv"),
+  //d3.csv("1970_2039_withdiff.csv"),
+  //d3.csv("yearlytmaxtrendcluster.csv"),
+  //d3.csv("yearlyprcptrendcluster.csv"),
+  d3.csv("monthlytmaxcluster.csv"),
+  d3.csv("monthlyprcpcluster.csv"),
+  d3.csv("yearlyprcprawcluster.csv"),
+  d3.csv("yearlytmaxrawcluster.csv"),
+  d3.csv("linearregline.csv"),
+  d3.csv("SeasonalchangeR.csv")
+]
+
+Promise.all(promises).then(ready)
+
+function ready([us,alldata,/*diffdata, tmaxclusterdata,prcpclusterdata,*/
+tmaxmonthlycluster,prcpmonthlycluster,yrlyprcpclusterdata,yrlytmaxclusterdata,linreg,seasonalchange]) {
+  
+  
+    /* Initialize tooltip */
+  //console.log("in promises")
+  var historyend = 2016
+  var historystart = 1950
+  data = alldata.filter((function(t){return t.Year <= "2039";}))
+  var miny = d3.min(data, function(d) { return +d.Year; });
+  var maxy = d3.max(data, function(d) { return +d.Year; });
+  var minMAXT = d3.min(data, function(d) { return +d.V_HW_Tmax_F; });
+  var maxMAXT = d3.max(data, function(d) { return +d.V_HW_Tmax_F; });
+  var maxPRCP= d3.max(data, function(d) { return +d.V_HW_Precipitation_inch; });
+
+  
+ // console.log(seasonalchange)
+  var interval = maxy - miny;
+
+  //console.log(miny, maxy)
+  //console.log(minMAXT,maxMAXT,maxPRCP)
+  //console.log(miny+nyears)
+    //Start and End of slider
+  var startDate = new Date(miny,0,1),
+      endDate = new Date(maxy,0,1);    
+
+  var x = d3.scaleTime()
+      .domain([startDate, endDate])
+      .range([0, targetValue])
+      .clamp(true);
+  
+    var yearlydata = d3.nest()
+        .key(function(d){return d.State})
+        .key(function(d){return d.Year})
+        .rollup(function(v) 
+                        { 
+                        return { TEMP: d3.max(v, function(d) {return +d.V_HW_Tmax_F; }),
+                                  PRCP: d3.sum(v, function(d) {return +d.V_HW_Precipitation_inch; })
+                            
+                        };
+                        })  
+
+        .entries(data);
+        var mintemp = 200
+        var maxtemp = 0
+        var yearlyflat = []
+        yearlydata.forEach(function(st) {
+          
+            st.values.forEach(function(year) {
+              if(maxtemp<year.value.TEMP){maxtemp = year.value.TEMP}
+              if(mintemp<year.value.TEMP){maxtemp = year.value.TEMP}
+                yearlyflat.push({
+                    state: st.key, year: year.key, tmax : year.value.TEMP,prcp : Math.round(year.value.PRCP)
+                
+              });
+            });
+        });
+    
+    var uniquestate = [...new Set(yearlyflat.map(item =>item.state))].sort()
+    //console.log(uniquestate)
+//diff data
+//console.log(diffdata)
+/*
+        var diffyearlydata = d3.nest()
+        .key(function(d){return d.State})
+        .key(function(d){return d.Year})
+        .rollup(function(v) 
+                        { 
+                        return { diffTEMP: d3.max(v, function(d) {return +d.diff_tmax; }),
+                                  diffPRCP: d3.sum(v, function(d) {return +d.diff_precip; })
+                            
+                        };
+                        })  
+        .entries(diffdata);
+
+       //console.log(diffyearlydata)
+
+        var diffmintemp = 200
+        var diffmaxtemp = 0
+        var diffyearlyflat = []
+        diffyearlydata.forEach(function(st) {
+          
+            st.values.forEach(function(year) {
+              if(diffmaxtemp<year.value.TEMP){maxtemp = year.value.diffTEMP}
+              if(diffmintemp<year.value.TEMP){maxtemp = year.value.diffTEMP}
+                diffyearlyflat.push({
+                    state: st.key, year: year.key, difftmax : year.value.diffTEMP,diffprcp : Math.round(year.value.diffPRCP)
+                
+              });
+            });
+        });
+  */
+    //-------------dropdown update
+    //console.log(linreg)
+    
+
+    // linear regression
+    var trend =[]
+    for(let i = 0; i < linreg.length; i++)
+    {
+    //console.log(linreg[i])
+
+    trend.push({
+      State: linreg[i].State, tmaxIntercept: linreg[i].tmaxIntercept,tmaxSlope:linreg[i].tmaxSlope, tmaxChange: Math.round((2016-1950)*linreg[i].tmaxSlope*10)/10,
+      prcpIntercept: linreg[i].prcpIntercept,prcpSlope:linreg[i].prcpSlope, prcpChange: Math.round((historyend-historystart)*linreg[i].prcpSlope*10)/10,
+      });
+    }
+    //console.log(trend)
+
+
+
+    factor = factorsList[1];
+    var tooltiptext;
+    
+    maxt = d3.max(yearlyflat, function(d) { return d.tmax; });
+    mint = Math.floor(d3.min(yearlyflat, function(d) { return d.tmax; })/10)*10;
+
+    maxtc = d3.max(trend, function(d) { return d.tmaxChange; });
+    mintc = Math.floor(d3.min(trend, function(d) { return d.tmaxChange; })/100)*100;
+
+    maxpc = Math.ceil(d3.max(trend, function(d) { return d.prcpChange; }));
+    minpc = Math.floor(d3.min(trend, function(d) { return d.prcpChange; }));
+    
+    maxp = d3.max(yearlyflat, function(d) { return d.prcp; });
+    minp = Math.floor(d3.min(yearlyflat, function(d) { return d.prcp; })/100)*100;
+    //console.log(mint, maxt,minp, maxp, mintc, maxtc,minpc, maxpc)
+
+    // initialize
+    colorScale.domain(d3.range(mint, maxt, 10));
+    colorScale.range(d3.schemeOranges[9]);
+    //tooltiptext = "Max Temp: ";
+    //legendText = "Temperature  (F)"
+    //maptitle = "Max Temperature for " 
+    firsttime = 0
+    
+    //cdata = clusterdata.filter(function(t){return t.Month == "Jul" && t.Year == "2019";})
+    cdata = []
+
+    var dropdownChange = function(){
+            //console.log(firsttime, factor)
+            clusterdata = "no"
+            maptitle = ""
+            document.getElementById("details").style.display = "none";
+            if (firsttime == 0){
+              firsttime = 1
+              factor == factorsList[1]
+            }
+            else{
+              factor = d3.select(this).property('value');
+              }
+            //console.log(firsttime, factor)
+            if (factor == factorsList[0]){
+                colorScale.domain(d3.range(minp, maxp, 15));
+                colorScale.range(d3.schemeBlues[9]);
+                tooltiptext = "Total Precip: ";
+                legendText = "Precipitation (in)"
+                maptitle = "Total Precipitation for "
+                document.getElementById("slideranimation").style.display = "block";
+                document.getElementById("monthly").click();
+                
+            }
+            else if(factor == factorsList[1]){
+                colorScale.domain(d3.range(mint, maxt, 10));
+                colorScale.range(d3.schemeOranges[7]);
+                tooltiptext = "Max Temp: "
+                legendText = "Temperature  (F)"
+                maptitle = "Max Temperature for " 
+                document.getElementById("slideranimation").style.display = "block";
+                document.getElementById("monthly").click();
+                
+            }
+            else if(factor == factorsList[2]){
+                clusterdata = "change"
+                colorScale.domain(d3.range(mintc, maxtc, 3));
+                colorScale.range(["",d3.schemeOranges[6][0],d3.schemeOranges[6][2],d3.schemeOranges[6][4]]);
+                tooltiptext = "Increase in Max Temp:";
+                legendText = "Increase in Max Temp"
+                legendDesctext = ["0 to +2 Degrees","+3 to +5 Degrees","+6 to +8 Degrees"]
+                document.getElementById("slideranimation").style.display = "none";
+                document.getElementById("yearly").click();
+                
+            }
+            else if(factor == factorsList[3]){
+              clusterdata = "change"
+                colorScale.domain(d3.range(minpc, maxpc, 3));
+                colorScale.range(["",d3.schemeOranges[6][1],d3.schemeBlues[6][1],d3.schemeBlues[6][4]]);
+                tooltiptext = "Change in Total Rain: ";
+                legendText = "Change in Total Rain"
+                legendDesctext = ["-4 to -2 in.","-1 to +1 in.","+2 to +4 in."]
+                document.getElementById("slideranimation").style.display = "none";
+                document.getElementById("yearly").click();
+                
+            }
+            //else if(factor == factorsList[2]||factofactor == factorsList[3]|| factor == factorsList[8]|| factor == factorsList[9]
+            //              || factor == factorsList[10]|| factor == factorsList[11]){
+            else if(factor == factorsList[8]|| factor == factorsList[9]
+                          || factor == factorsList[10]|| factor == factorsList[11]|| 
+                          factor == factorsList[12]|| factor == factorsList[13]|| factor == factorsList[14]|| factor == factorsList[15]){
+            
+                //var filterYear = "2019"
+            /*    if (factor == factorsList[2])
+                {
+                  cdata = tmaxclusterdata
+                  //colorScale.range(d3.schemeSet1);
+                  colorScale.range(d3.schemeOranges[9])
+                  //colorScale.range(["",d3.schemeOranges[4][1],d3.schemeOranges[4][3],d3.schemeOranges[4][2]])
+                }
+                else */
+                /*
+                if(factor == factorsList[3]){
+                  cdata = prcpclusterdata 
+                  //colorScale.range(d3.schemePaired);
+                  colorScale.range(["",d3.schemeBlues[4][0],d3.schemeBlues[4][3],d3.schemeBlues[4][2]])
+                }
+                else */
+                clusterdata = "yes"
+                if(factor == factorsList[8]){
+                  cdata = tmaxmonthlycluster
+                 // colorScale.range(["",d3.schemeOranges[6][1],d3.schemeOranges[6][3],d3.schemeOranges[6][4]])
+                  colorScale.range(["",d3.interpolateSpectral(.9),d3.interpolateSpectral(.75),d3.interpolateSpectral(.45)])
+                  //colorScale.range(["","orange","lightblue","lightgreen"]);
+                  clusterDesc = ["Cold","Moderate","Warm"]
+                  tooltiptext = "Winter: ";
+                  legendText = "Winter"
+                  document.getElementById("monthly").click();
+                }
+                else if(factor == factorsList[9]){
+                  cdata = prcpmonthlycluster
+                  colorScale.range(["",d3.schemeBlues[5][0],d3.schemeBlues[5][2],d3.schemeBlues[5][3]])
+                 // uniqueCluster = [...new Set(cdata.map(item =>+item.cluster))].sort()
+                 clusterDesc = ["Rarely","Most of the year","Seasonal"]
+                  tooltiptext = "Rain Frequency: ";
+                  legendText = "Rain Frequency"
+                  document.getElementById("monthly").click();
+                }
+                else if(factor == factorsList[10]){
+                  cdata = yrlytmaxclusterdata
+                  colorScale.range(["",d3.schemeOranges[6][1],d3.schemeOranges[6][3],d3.schemeOranges[6][4]])
+                  //colorScale.range(d3.schemeOranges[9])
+                  //uniqueCluster = [1,3,2]
+                  clusterDesc = ["Mild","Moderate","Hot"]
+                  //uniqueCluster = [...new Set(cdata.map(item =>+item.cluster))].sort()
+                  tooltiptext = "Summer: ";
+                  legendText = "Summer"
+                  document.getElementById("monthly").click();
+                  }
+                else if(factor == factorsList[11]){
+                  cdata = yrlyprcpclusterdata
+                  colorScale.range(["",d3.schemeBlues[5][0],d3.schemeBlues[5][2],d3.schemeBlues[5][3]])
+                  clusterDesc = ["Almost Dry","Moderate","Wet"]
+                  tooltiptext = "Rain: ";
+                  legendText = "Rain"
+                  document.getElementById("monthly").click();
+                }
+
+                //console.log("!!!!!!!")  
+                //cdata = clusterdata.filter(function(t){return t.Month == "Jul" && t.Year == filterYear;})
+
+                var uniqueCluster = [...new Set(cdata.map(item =>+item.cluster))].sort()
+
+                
+
+                if(factor == factorsList[12]){
+                  cdata = seasonalchange
+                  //console.log(cdata)
+                  colorScale.range(["",d3.interpolateSpectral(.45),d3.interpolateSpectral(.25)])
+                  var uniqueCluster = [...new Set(cdata.map(item =>+item.SummerStartingEarly))].sort()
+                  clusterDesc = ["No","Yes"]
+                  tooltiptext = "Early Summer: ";
+                  legendText = "Early Summer"
+                  //colorScale.range(d3.schemeOranges[9])
+                  document.getElementById("monthly").click();
+                }
+                if(factor == factorsList[13]){
+                  cdata = seasonalchange
+                  //console.log(cdata)
+                  colorScale.range(["",d3.schemeOranges[6][1],d3.schemeOranges[6][3],d3.schemeOranges[6][2]])
+                  var uniqueCluster = [...new Set(cdata.map(item =>+item.SummerEndingLate))].sort
+                  clusterDesc = ["No","Yes"]
+                  tooltiptext = "Summer Late: ";
+                  legendText = "Summer Late"
+                  document.getElementById("monthly").click();
+                  //colorScale.range(d3.schemeOranges[9])
+                }
+                if(factor == factorsList[14]){
+                  cdata = seasonalchange
+                  console.log(cdata)
+                  colorScale.range(["",d3.schemeOranges[6][1],d3.schemeOranges[6][3],d3.schemeOranges[6][2]])
+                  var uniqueCluster = [...new Set(cdata.map(item =>+item.WinterStartingLate))].sort()
+                  clusterDesc = ["No","Yes"]
+                  tooltiptext = "Winter Late: ";
+                  legendText = "Winter Late"
+                  document.getElementById("monthly").click();
+                  //colorScale.range(d3.schemeOranges[9])
+                }
+                if(factor == factorsList[15]){
+                  cdata = seasonalchange
+                  //console.log(cdata)
+                  colorScale.range(["",d3.interpolateSpectral(.7),d3.interpolateSpectral(.3)])
+                  var uniqueCluster = [...new Set(cdata.map(item =>+item.WinterEndingEarly))].sort()
+                  clusterDesc = ["No","Yes"]
+                  tooltiptext = "Early Spring: ";
+                  legendText = "Early Spring"
+                  document.getElementById("monthly").click();
+                  //colorScale.range(d3.schemeOranges[9])
+                }
+                //console.log(uniqueCluster)
+               // var sortedCluster = uniqueCluster.sort()
+                colorScale.domain(uniqueCluster);
+                document.getElementById("slideranimation").style.display = "none";
+                
+            }
+           /* else if(factor == factorsList[4]|| factor == factorsList[5]){
+                var filterYear = "2019"
+                if (factor == factorsList[5])
+                {
+                    filterYear = "2070"
+                }
+                console.log("!!!!!!!")
+                cdata = tmaxclusterdata.filter(function(t){return t.Month == "Jul" && t.Year == filterYear;})
+
+                //var uniqueCluster = [...new Set(cdata.map(item =>+item.cluster))]
+               // console.log(uniqueCluster)
+               // var sortedCluster = uniqueCluster.sort()
+               // console.log(sortedCluster)
+               maxtc = d3.max(cdata, function(d) { return d.tempChange; });
+                mintc = d3.min(cdata, function(d) { return d.tempChange; });
+                console.log(mintc, maxtc)
+                
+                colorScale.domain(d3.range(mintc, maxtc, 10));
+                colorScale.range(d3.schemeOranges[9]);
+                tooltiptext = "Temp Change: ";
+                legendText = "Temp Change"
+                document.getElementById("slideranimation").style.display = "none";
+                
+            }*/
+           /* else if(factor == factorsList[6] || factor == factorsList[7]){
+                var filterYear = "2019"
+                if (factor == factorsList[7])
+                {
+                    filterYear = "2070"
+                }
+                console.log("!!!!!!!")
+                cyearlydata = prcpclusterdata.filter(function(t){return  t.Year == filterYear;})
+                cdata = d3.nest()
+                    .key(function(d){return d.State})
+                    .rollup(function(v) 
+                                { 
+                                return  Math.round(d3.sum(v, function(d) {return +d.prcpChange; }))
+                                })  
+                    .entries(cyearlydata);
+                console.log(cdata)
+                maxpc = d3.max(cdata, function(d) { return d.value; });
+                minpc = d3.min(cdata, function(d) { return d.value; });
+                console.log(minpc, maxpc)
+                colorScale.domain(d3.range(minpc, maxpc, (maxpc-minpc)/8));
+                colorScale.range(d3.schemeRdBu[9]);
+                tooltiptext = "Precipitation Change: ";
+                legendText = "Precipitation Change"
+                document.getElementById("slideranimation").style.display = "none";
+                
+            }*/
+            //console.log(colorScale.domain());
+            //console.log(cdata)
+            updateMap("2016");
+            updateLegend();
+
+        }
+              
+        var dropDown = d3.select("#dropdown-container")
+                        .append("select")
+                        .attr("id","dropdown")
+                        .attr("text-anchor", "middle")
+                        .style("alignment-baseline", "start")  
+                        .on("change", dropdownChange);
+                       // .on("change", ;
+            
+        var options = dropDown.selectAll("option")
+                .data(dropdownlist)
+                .enter()
+                .append("option");
+
+        options.text(function(d) {
+                    return d;   
+                })
+                .attr("value", function(d) {
+                    return d;
+                })
+                .property("selected", function(d){
+                    return d == factorsList[1];
+                })
+                ;         
+
+    
+    var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([40, 100])
+    .html(function(d) { 
+            if (clusterdata=="yes") {
+              return  "State: "+d.properties.name + "<br/>"  + tooltiptext+ clusterDesc[d.fact-1] 
+            }
+            
+            else{
+            return  "State: "+d.properties.name + "<br/>" + "Year: "+d.year+ "<br/>" + tooltiptext+ d.fact ; 
+          }
+        });
+    /* Invoke the tip in the context of your visualization */
+    svg.call(tip)
+    
+ 
+
+//slider
+    slider.append("line")
+    .attr("class", "track")
+    .attr("x1", x.range()[0])
+    .attr("x2", x.range()[1])
+    .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+    .attr("class", "track-inset")
+    .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+    .attr("class", "track-overlay")
+    .call(d3.drag()
+        .on("start.interrupt", function() { slider.interrupt(); })
+        .on("start drag", function() {
+          currentValue = d3.event.x;
+          update(x.invert(currentValue)); 
+        })
+    );
+
+    slider.insert("g", ".track-overlay")
+    .attr("class", "ticks")
+    .attr("transform", "translate(0," + 18 + ")")
+  .selectAll("text")
+    .data(x.ticks(5))
+    .enter()
+    .append("text")
+    .attr("x", x)
+    .attr("y", 10)
+    .attr("text-anchor", "middle")
+    .text(function(d) { return formatDate(d); });
+
+    var handle = slider.insert("circle", ".track-overlay")
+    .attr("class", "handle")
+    .attr("r", 9);
+    //console.log("start date", startDate, formatDate(startDate))
+    var label = slider.append("text")  
+    .attr("class", "label")
+    .attr("text-anchor", "middle")
+    .text(formatDate(startDate))
+    .attr("transform", "translate(0," + (-25) + ")")
+
+// draw intially
+    //console.log(factor)
+  dropdownChange()
+  //updateMap("2016");
+  //updateLegend();
+
+////--------------update on play
+    playButton
+        .on("click", function() {
+        //console.log("inside click)")
+        var button = d3.select(this);
+        if (button.text() == "Pause") {
+        moving = false;
+        clearInterval(timer);
+        // timer = 0;
+        button.text("Play");
+        } else {
+        moving = true;
+        timer = setInterval(step, 100);
+        button.text("Pause");
+        }
+        console.log("Slider moving: " + moving);
+    })
+
+    function step() {
+    //console.log("current value", currentValue,x.invert(currentValue))
+    update(x.invert(currentValue));
+    currentValue = currentValue + (targetValue/interval);
+    if (currentValue > targetValue) {
+        moving = false;
+        currentValue = 0;
+        clearInterval(timer);
+        // timer = 0;
+        playButton.text("Play");
+        console.log("Slider moving: " + moving);
+    }
+    }
+
+    function update(h) {
+    // update position and text of label according to slider scale
+    handle.attr("cx", x(h));
+    label
+        .attr("x", x(h))
+        .text(formatDate(h));
+
+    // filter data set and redraw plot
+    console.log("..............inside update")
+    console.log(factor)
+    updateMap(formatDate(h))
+    }
+
+// --------------------------------------------------draw map
+    function updateMap(year){
+     //   console.log("~~~~~~~~~~");
+     //   console.log(factor)
+     //   console.log(colorScale.domain())
+     //console.log(cdata)
+      svg.append("g")
+          .attr("class", "states")
+          //.attr("transform", "translate(" + -margin.left + "," + -margin.top + ")")
+            .selectAll("path")  
+            .data(topojson.feature(us, us.objects.states).features)
+            .enter().append("path")
+          .attr("fill", function(d) { 
+              //console.log("d", d)
+              var hdata = yearlyflat.filter(function(t){return t.state == d.properties.name && t.year == year;})
+              
+              //console.log(hdata)
+              if (hdata.length > 0 )
+              {
+               // console.log("~~~~~~~~~") 
+                //console.log(factor)
+                if(factor == factorsList[1]){
+                    d.fact = +hdata[0].tmax
+                }
+                else if(factor == factorsList[0]){
+                    d.fact = +hdata[0].prcp
+                }
+                //else if(factor == factorsList[2] || factor == factorsList[3]||factor == factorsList[8]||factor == factorsList[9]
+                else if(factor == factorsList[8]||factor == factorsList[9]
+                        ||factor == factorsList[10]||factor == factorsList[11]){
+                    var csdata = cdata.filter(function(t){return t.State == d.properties.name;})
+                    d.fact = +csdata[0].cluster
+                }
+                else if(factor == factorsList[4] || factor == factorsList[5]){
+                    var csdata = cdata.filter(function(t){return t.State == d.properties.name;})
+                    d.fact = +csdata[0].tempChange
+                }
+                else if(factor == factorsList[2]){
+                    var csdata = trend.filter(function(t){return t.State == d.properties.name;})
+                    d.fact = +csdata[0].tmaxChange
+                }
+                else if(factor == factorsList[3]){
+                    var csdata = trend.filter(function(t){return t.State == d.properties.name;})
+                    d.fact = +csdata[0].prcpChange
+                }
+                else if(factor == factorsList[6] || factor == factorsList[7]){
+                    var csdata = cdata.filter(function(t){return t.key == d.properties.name;})
+                    d.fact = +csdata[0].value
+                }
+                else if(factor == factorsList[12]){
+                    //console.log(factor, t.key)
+                    var csdata = cdata.filter(function(t){return t.State == d.properties.name;})
+                    d.fact = +csdata[0].SummerStartingEarly
+                }
+                else if(factor == factorsList[13]){
+                    //console.log(factor, t.key)
+                    var csdata = cdata.filter(function(t){return t.State == d.properties.name;})
+                    d.fact = +csdata[0].SummerEndingLate
+                }
+                else if(factor == factorsList[14]){
+                    //console.log(factor, t.key)
+                    var csdata = cdata.filter(function(t){return t.State == d.properties.name;})
+                    d.fact = +csdata[0].WinterStartingLate
+                }
+                else if(factor == factorsList[15]){
+                    //console.log(factor, t.key)
+                    var csdata = cdata.filter(function(t){return t.State == d.properties.name;})
+                    d.fact = +csdata[0].WinterEndingEarly
+                }
+                d.year = year
+                var col = colorScale(d.fact)
+               if (col) {
+
+                  return col
+                } else {
+                  return '#ffffff'
+                }
+              }
+          })
+        .attr("d", path)
+        .attr("width", width)
+        .attr("height", height)
+        .on('mouseover',function(d){
+          tip.show(d)
+          d3.select(this).transition().duration(300).style("opacity", 0.8);
+        }
+        )
+        .on('mouseout', function(d){
+          tip.hide(d)
+        d3.select(this).transition().duration(300).style("opacity", 1);
+            }
+        )
+        .on('click',showstatetrend)
+        .append("title") ;
+
+       
+    svg.append("path")
+        .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+        .attr("class", "statesline")
+        .attr("d", path)
+        .attr("width", width)
+        .attr("height", height)
+        ;
+            if (maptitle!= ""){
+              maptitlecombined = maptitle + year
+            }
+            else{
+              maptitlecombined = factor
+            }
+    svg.selectAll("text.maptitle").remove();
+        // title
+    svg.append("text")
+      .attr("class", "maptitle")
+        .attr("x", width/2)
+        .attr("y", margin.top/3)
+        //.attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .style("font-family", "avenir next")
+        .style("fill", "#696969")
+        .style("font-weight", "bold")
+      //  .style("text-decoration", "underline")
+        //.text(String);
+        .text(maptitlecombined);
+    
+    
+    }
+
+function updateLegend(){
+   // d3.selectAll("g.legend").remove();
+    var legendX = (width*.83),
+      legendY = height/2.25;
+   //console.log(scale,width)
+    svg.selectAll("g.legend").remove();
+    svg.selectAll("text.legend").remove();
+
+
+    svg.append("text")
+      .attr("class", "legend")
+        .attr("x", legendX)
+        .attr("y", legendY-15)
+        .attr("dy", ".35em")
+        .attr("text-anchor", "start")
+       // .attr("font-weight","bold")
+        //.text(String);
+        .text(legendText);
+    
+    var legendUpdate = svg.selectAll("g.legend")
+        .data(colorScale.domain());
+    //console.log(colorScale.domain())
+    var legendEnter = legendUpdate.enter().append("g")
+        .attr("class", "legend")
+        .attr("id",function(d){ 
+          // console.log ("$$$$$$$")
+          // console.log(d)
+            return d})
+        .attr("transform", function(d, i) { return "translate(" + (legendX ) + "," + (legendY+ i*30*scale ) + ")"; });
+    
+    var legendExit = legendUpdate.exit();
+    legendExit.remove()
+
+    legendUpdate.merge(legendEnter)
+        .append("rect")
+        .attr("width", 20*scale)
+        .attr("height", 30*scale) 
+        .style("fill", function(d){ 
+                 return (colorScale(d))});
+
+    legendUpdate.merge(legendEnter)
+        .append("text")
+        .attr("x", 25*scale)
+        .attr("y", 8*scale)
+        .attr("dy", ".35em")
+        .attr("font-size",14*scale)
+        .attr("text-anchor", "start")
+        //.text(String);
+        .text(function(d,i){ 
+          
+          if (clusterdata == "yes"){
+            console.log(d,i)
+              return clusterDesc[d-1]
+              
+          }
+          else if (clusterdata=="change")
+          {
+            return legendDesctext[i] 
+          }
+          else{
+            return Math.round((d))
+          }
+        });
+        
+        }
+
+//---------------------------------------------on click of state
+
+    function showstatetrend(d){
+      d3.select("#stdropdown").remove()
+        function movingAverage(values, N) {
+                let i = 0;
+                let sum = 0;
+                const means = new Float64Array(values.length).fill(NaN);
+                for (let n = Math.min(N - 1, values.length); i < n; ++i) {
+                    sum += values[i];
+                }
+                for (let n = values.length; i < n; ++i) {
+                    sum += values[i];
+                    means[i] = sum / N;
+                    sum -= values[i - N + 1];
+                }
+                return means;
+            }
+          
+          function findMaxpeak(values){
+                let i = 1;
+                const diffs = new Float64Array(values.length).fill(NaN);
+                const maxpeak = new Float64Array(values.length).fill(NaN);
+                let maxpeakfound = 0;
+                let max = 0
+                for (let n = values.length; i < n; ++i) {
+                    diffs[i] = values[i]- values[i-1]
+                    if (diffs[i]<0 && maxpeakfound == 0){
+                      if (max <values[i-1]){
+                        maxpeak[i-1]=values[i-1]
+                        max = values[i-1]
+                        
+                      }
+                      maxpeakfound = 1
+                    }
+                    if (diffs[i]>0 ){
+                      maxpeakfound = 0
+                    }
+                }
+                maxpeak[values.length-1] = max
+                return maxpeak
+          }
+          
+
+          function findMinpeak(values){
+                let i = 1;
+                const diffs = new Float64Array(values.length).fill(NaN);
+                const minpeak = new Float64Array(values.length).fill(NaN);
+                let minpeakfound = 0;
+                let min = 5000
+                for (let n = values.length; i < n; ++i) {
+                    diffs[i] = values[i]- values[i-1]
+                    if (diffs[i]>0 && minpeakfound == 0){
+                      if (min >values[i-1]){
+                        minpeak[i-1]=values[i-1]
+                        min = values[i-1]
+                        
+                      }
+                      minpeakfound = 1
+                    }
+                    if (diffs[i]<0 ){
+                      minpeakfound = 0
+                    }
+                }
+                minpeak[values.length-1] = min
+                return minpeak
+          }
+
+
+
+
+        //if (factor != factorsList[2] && factor != factorsList[3] )
+        if (true )
+        {
+                    document.getElementById("details").style.display = "block";
+                    d3.select("#chart1").select("svg").remove();
+                    d3.select("#chart2").select("svg").remove();
+                    //d3.select("#seasonal").remove();
+                    var st = d.properties.name;        
+//                    var monthly = data.filter(function(t){return t.State == st && t.Year <=2016});
+//                    var yearlySt = yearlyflat.filter(function(t){return t.state == st && t.year <=2016}).sort(function(a, b){ return d3.ascending(a.year, b.year); })
+
+                    var monthly = data.filter(function(t){return t.State == st });
+                    //console.log(monthly)
+                    var yearlySt = yearlyflat.filter(function(t){return t.state == st }).sort(function(a, b){ return d3.ascending(a.year, b.year); })
+                    var uniqueyear = [...new Set(monthly.map(item =>+item.Year))].sort()
+                    //console.log(uniqueyear)
+                    //var xt = d3.scaleLinear().range([0, width_s]),
+                    var  x = d3.scaleBand().range([0, width_s]),
+                        y = d3.scaleBand().range([0, height_s]),
+                        y_yearly = d3.scaleLinear().range([height_s, 0])
+
+                    // var seasonalScale = d3.scaleThreshold().range(d3.schemeOrRd[9]);
+                    var seasonalScale = d3.scaleThreshold();
+                if (factor == factorsList[0]|| factor == factorsList[6] || factor == factorsList[7]|| factor == factorsList[3]
+                  || factor == factorsList[9]||factor == factorsList[11]){
+                    datatype = "prcp"
+                    linelegendtext = "Average Change in Total Precipitation (1950-2016)"
+                    s_legendtext = "Total Precipitation(in)"
+                    yaxislabel = "Total Precipitation (inch)"
+                    mins = 0
+                    maxs = maxPRCP
+                    //    maxs = d3.max(monthly, function(d) {     return +d.V_HW_Precipitation_inch; });
+                    //    mins = Math.floor(d3.min(monthly, function(d) { return +d.V_HW_Precipitation_inch; })/10)*10;
+                        seasonalScale.domain(d3.range(mins, maxs, 2));
+                        seasonalScale.range(d3.range(0, 1, 2*.95/(maxs-mins)));
+                       // miny = Math.floor(d3.min(yearlySt, function(d) { return +d.prcp; })/10)*10-10;
+                       // maxy = d3.max(yearlySt, function(d) { return +d.prcp; });
+                       
+                         miny = 0
+                       maxy = maxp
+                       var gridlinerange = d3.range(miny, maxy, 20)
+                        movingAvgValues = movingAverage(yearlySt.map(d => d.prcp), nyears)
+                        maxpeak = findMaxpeak(yearlySt.map(d => d.prcp))
+                        minpeak = findMinpeak(yearlySt.map(d => d.prcp))
+                        y_yearly.domain([miny,maxy])
+                        linecolor = "steelblue";
+                        line2color = "lightblue"
+                        line3color = "lightblue";
+                        title = "Annual Precipitation"
+                }
+                else if(factor == factorsList[1]|| factor == factorsList[4] || factor == factorsList[5] || factor == factorsList[2]
+                            || factor == factorsList[8]||factor == factorsList[10]||factor == factorsList[12]||factor == factorsList[13]||
+                                factor == factorsList[14]||factor == factorsList[15]){
+                      datatype = "tmax"
+                      linelegendtext = "Average Change in Max Temparature (1950-2016)"
+                      s_legendtext = "Max Temprature(F)"
+                      yaxislabel = "Max Temprature (F)"
+                        //maxs = d3.max(monthly, function(d) { return +d.V_HW_Tmax_F; });
+                        //mins = Math.floor(d3.min(monthly, function(d) { return +d.V_HW_Tmax_F; })/10)*10;
+                        mins = Math.floor(minMAXT/5)*5
+                        maxs   = maxMAXT
+                       
+                        seasonalScale.domain(d3.range(mins, maxs, seasonaltempinterval));
+
+                        seasonalScale.range(d3.range(0, 1, (  seasonaltempinterval-1)/(maxs-mins)));
+                        //miny = Math.floor(d3.min(yearlySt, function(d) { return +d.tmax; })/10)*10-10;
+                       // maxy = d3.max(yearlySt, function(d) { return +d.tmax; });
+                    
+                       miny = mint
+                       maxy = maxt+5
+
+                       var gridlinerange = d3.range(miny, maxy, 5)
+                        movingAvgValues = movingAverage(yearlySt.map(d => d.tmax), nyears)
+                        maxpeak = findMaxpeak(yearlySt.map(d => d.tmax))
+                        minpeak = findMinpeak(yearlySt.map(d => d.tmax))
+                        //console.log(diffValues)
+                        y_yearly.domain([miny,maxy])
+                        linecolor = "darkorange";
+                        line2color = "orangered";
+                        line3color = "maroon";
+                        title = "Max Temperature "
+                }
+                
+               // console.log(".............") 
+               // console.log(mins, maxs, miny, maxy)
+                    
+               console.log("seasonal scale")
+                 
+                //console.log(d3.range(0, 1, seasonaltempinterval/(maxs-mins)));
+                console.log(seasonalScale.range())
+                console.log(seasonalScale.domain())
+                
+                    x.domain(uniqueyear);
+                  // xt.domain(monthly.map( function (d) { return (+d.Year); }).sort());
+                 //console.log(x.domain())
+                    y.domain(["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]);
+                // console.log(seasonalScale.domain())
+                    //console.log(seasonalScale.range())
+
+                    
+                    //console.log(movingAvgValues)
+                    //console.log(x.domain())
+                    var maxpeakresult = [];
+
+                    uniqueyear.forEach(function(yr, i){
+                        if (!Number.isNaN(maxpeak[i])){
+                          // console.log(movingAvgValues[i])
+                        maxpeakresult.push({
+                             year : yr, maxpeak : maxpeak[i]
+                        })
+                    }
+                    })
+
+                    var minpeakresult = [];
+
+                    uniqueyear.forEach(function(yr, i){
+                        if (!Number.isNaN(minpeak[i])){
+                          // console.log(movingAvgValues[i])
+                        minpeakresult.push({
+                            year : yr, minpeak : minpeak[i]
+                        })
+                    }
+                    })
+                    var movingresult = [];
+
+                      uniqueyear.forEach(function(yr, i){
+                          if (!Number.isNaN(movingAvgValues[i])){
+                            // console.log(movingAvgValues[i])
+                          movingresult.push({
+                              year : yr, movavg : movingAvgValues[i]
+                          })
+                      }
+                      })
+                  
+                    //console.log(minpeakresult);
+
+
+            var seasonalColorCode = function(d){
+            //    console.log("inside seasonalColorCode")
+             //    console.log(d)
+                //if(factor == factorsList[1]|| factor == factorsList[4] || factor == factorsList[5]|| factor == factorsList[2])
+                if (datatype == "tmax")
+                {
+                        return d3.interpolateOrRd(1-seasonalScale(+d.V_HW_Tmax_F));
+                        }
+                //else if(factor == factorsList[0]|| factor == factorsList[6] || factor == factorsList[7] || factor == factorsList[3])
+                else if(datatype == "prcp")
+                {
+                        return d3.interpolateBlues(seasonalScale(+d.V_HW_Precipitation_inch));
+                        }
+            
+            }
+
+
+                var tilepadding = .0005;
+                    var svg_s = d3.select("#chart2")
+                        .append("svg")
+                        .attr("id","seasonal")
+                        .attr("width", width_s + margin_s.left + margin_s.right)
+                        .attr("height", height_s + margin_s.top + margin_s.bottom) 
+                        .append("g")
+                    .attr("transform", "translate(" + margin_s.left + "," + margin_s.top + ")")
+                        ;
+                //var xAxis = d3.axisBottom().scale(x).ticks(5);
+                var xAxis = d3.axisBottom()
+                    .scale(x)
+                    .tickValues(x.domain().filter((d, i) => d % 10 === 0))
+                    .tickSizeOuter(0)
+
+                    //var xAxisHandleForUpdate = svg_s.append("g")
+                    svg_s.append("g")      
+                            .attr("class", "x axis")
+                            .attr("transform", "translate(0," + height_s + ")")
+                            .call(xAxis);
+
+                    var yAxis = d3.axisLeft().scale(y).tickSizeOuter(0);
+
+
+
+                        
+
+                    //console.log (xt.domain())
+                    // Render the data in an svg:
+                    svg_s.selectAll("svg")
+                        .data(monthly)
+                        .enter().append("rect")
+                        .attr("class", "tile")
+                        .attr("x", function(d) {return x((+d.Year)); })
+                        .attr("y", function(d) {return y(d.Month); })
+                        .attr("width", x.bandwidth()-tilepadding)
+                        .attr("height", y.bandwidth()-tilepadding)
+                        .attr("transform", "translate(0, 0)")
+                        .style("fill",function(d) 
+                        { 
+                        
+                        // console.log(seasonalScale(d.V_HW_Tmax_F));
+                        //if(factor == factorsList[1]|| factor == factorsList[4] || factor == factorsList[5]|| factor == factorsList[2])
+                        if(datatype == "tmax")
+                        {
+                          
+                          return d3.interpolateSpectral(1-seasonalScale(+d.V_HW_Tmax_F));
+                        }
+                        //else if(factor == factorsList[0]|| factor == factorsList[6] || factor == factorsList[7]|| factor == factorsList[3])
+                        else if((datatype == "prcp"))
+                        {
+                          return d3.interpolateBlues(seasonalScale(+d.V_HW_Precipitation_inch));
+                        }
+                        })
+                        .on('mouseover', function(d){
+                        // d3.select(this);
+                        // .style("fill", "orange");
+                        svg_s.append("text")
+                            .attr("id", "tooltip")
+                            .attr("x", width_s/2)
+                            .attr("y", -margin_s.top/5)
+                            .attr("text-anchor", "middle")
+                            .attr("font-family", "sans-serif")
+                            .attr("font-size", "15px")
+                            .attr("font-weight", "bold")
+                            .attr("fill", "black")
+                            .text(function(d){
+                                if(datatype == "tmax"){
+                                    return d.Month + " " + d.Year +" : " + d.V_HW_Tmax_F;
+                                }
+                                else if(datatype == "prcp"){
+                                    return d.Month + " " + d.Year +" : " + d.V_HW_Precipitation_inch;
+                                }
+                            })
+                                
+                            console.log("***")
+                        })
+                    .on("mouseout", function(d) {
+                        d3.select(this)
+                        .transition()
+                        .duration(250)
+                        .style("fill", function(d) { 
+                            if(datatype == "tmax"){
+                        return d3.interpolateSpectral(1-seasonalScale(+d.V_HW_Tmax_F));
+                        }
+                        else if(datatype == "prcp"){
+                        return d3.interpolateBlues(seasonalScale(+d.V_HW_Precipitation_inch));
+                        }
+                        })
+                        d3.select("#tooltip").remove();
+                    });
+                // Add the title:
+                svg_s.append("text")
+                        .attr("x", (width_s / 2))             
+                        .attr("y", -margin_s.top/2)
+                        .attr("text-anchor", "middle")
+                        .attr("class", "title")
+                        .style("font-size", "20px")
+                        .style("font-family", "avenir next")
+                        .style("fill", "#696969")
+                        .style("font-weight", "bold")
+                        .text("Seasonal Change for " + st +" - " + title);
+                    // Add a y-axis with labe
+                svg_s.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis)
+                        .append("text")
+                        .attr("class", "label")
+                        .attr("x", 4)
+                    // .attr("dy", ".71em")
+                        .attr("text-anchor", "end")
+                        .attr("transform", "rotate(-90)")
+                        .text("Value");
+
+
+                    
+            //Legend
+            var legendX_s = scale*margin_s.left/10,
+                    legendY_s = height_s+(margin_s.bottom)/2;
+
+                svg_s.append("text")
+                    .attr("x", legendX_s)
+                    .attr("y", legendY_s - 15)
+                    .attr("dy", ".35em")
+                    .attr("text-anchor", "start")
+                    .attr("font-weight","bold")
+                    //.text(String);
+                    .text(s_legendtext);
+
+                var legendUpdate = svg_s.selectAll("g.legend")
+                    .data(seasonalScale.domain());
+                var legendEnter = legendUpdate.enter().append("g")
+                    .attr("class", "legend")
+                    .attr("id",function(d){ return d})
+                    .attr("transform", function(d, i) { return "translate(" + (legendX_s + i*30*scale) + "," + (legendY_s ) + ")"; });
+                
+                var legendExit = legendUpdate.exit();
+                legendExit.remove()
+
+                legendUpdate.merge(legendEnter)
+                    .append("rect")
+                    .attr("width", 30*scale)
+                    .attr("height", 20*scale) 
+                    .style("fill", function(d){ 
+                        if(datatype == "tmax"){
+                          console.log( d,seasonalScale(d),(1-seasonalScale(d)),d3.interpolateSpectral(1-seasonalScale(d)))
+                            return (d3.interpolateSpectral(1-seasonalScale(d)))
+                        }
+                        else if(datatype == "prcp"){
+                            return (d3.interpolateBlues(seasonalScale(d)))
+                        }
+                    
+                        });
+
+                legendUpdate.merge(legendEnter)
+                    .append("text")
+                    .attr("x", 0)
+                    .attr("y", 27*scale)
+                    .attr("dy", ".35em")
+                    .attr("font-size",14*scale)
+                    .attr("text-anchor", "start")
+                    //.text(String);
+                    .text(function(d){ return Math.round((d))});
+            
+        //---------------------------------------yearly Map  
+                var svg_y = d3.select("#chart1")
+                    .append("svg")
+                        .attr("width", width_s + margin_s.left + margin_s.right)
+                        .attr("height", height_s + margin_s.top + margin_s.bottom) 
+                        .append("g")
+                        .attr("transform", "translate(" + margin_s.left + "," + margin_s.top + ")");
+
+        var line1 = d3.line()
+            .x(function(d, i) { return x(+d.year); }) // set the x values for the line generator
+            .y(function(d) { 
+                if(datatype == "tmax"){
+                            return y_yearly(d.tmax); 
+                        }
+                else if(datatype == "prcp"){
+                            return y_yearly(d.prcp);
+                        }
+                })                 // set the y values for the line generator 
+            .curve(d3.curveMonotoneX) // apply smoothing to the line
+            
+
+        var line2 = d3.line()
+            .x(function(d, i) { return x(d.year); }) // set the x values for the line generator
+            .y(function(d) { 
+                return y_yearly(d.movavg); 
+                    }
+            )                 // set the y values for the line generator 
+            .curve(d3.curveMonotoneX) // apply smoothing to the line
+
+        var line3 = d3.line()
+            .x(function(d, i) { return x(d.year); }) // set the x values for the line generator
+            .y(function(d) { 
+                return y_yearly(d.maxpeak); 
+                    }
+            )                 // set the y values for the line generator 
+            .curve(d3.curveMonotoneX) // apply smoothing to the line
+        var line4 = d3.line()
+            .x(function(d, i) { return x(d.year); }) // set the x values for the line generator
+            .y(function(d) { 
+                return y_yearly(d.minpeak); 
+                    }
+            )                 // set the y values for the line generator 
+            .curve(d3.curveMonotoneX) // apply smoothing to the line
+            
+         //Define Y axis
+            var yAxis = d3.axisLeft()
+                    .scale(y_yearly)
+                    .ticks(5)
+                    .tickSizeOuter(0);
+            
+            var xAxis = d3.axisBottom()
+                            .scale(x)
+                            .tickValues(x.domain().filter((d, i) => d % 10 === 0))
+                            .tickSizeOuter(0);
+
+
+            // gridlines in x axis function
+                        function make_x_gridlines() {		
+                            return d3.axisBottom(x)
+                               // .ticks(5)
+                               .tickValues(x.domain().filter((d, i) => d % 10 === 0))
+                               .tickSizeOuter(0)
+                        }
+
+                        // gridlines in y axis function
+                        function make_y_gridlines() {		
+                            return d3.axisLeft(y_yearly)
+                           // .tickPadding(5) 
+                            //.ticks(10  )
+                            .tickValues(gridlinerange)
+                            .tickSizeOuter(0)
+                        }
+
+               //         console.log(x.domain().filter((d, i) => d % 10 === 0))
+            //console.log(y_yearly.domain())
+            yearlyStHist = yearlySt.filter((function(t){return t.year <= 2016 }))
+            svg_y.append("path")
+                .datum(yearlyStHist) //  Binds data to the line 
+                .attr("class", "line") // Assign a class for styling 
+                .style('stroke',linecolor)
+                .style("stroke-width",1)
+
+              /*  .style("stroke-dasharray",function(d){
+                    console.log(d)
+                    if(+d.Year>2019){
+                        return "(5,5)";
+                    }
+                    else{
+                        "none"
+                    }
+                }
+                )*/
+                .style('fill',"none")
+                //.attr("fake",function(d){console.log(d)})
+                .attr("d", line1)
+                ;
+            yearlyStforecast = yearlySt.filter((function(t){return t.year >= 2016 }))
+            svg_y.append("path")
+                .datum(yearlyStforecast) //  Binds data to the line 
+                .attr("class", "line") // Assign a class for styling 
+                .style('stroke',linecolor)
+                .style("stroke-width",1)
+                .style("stroke-dasharray","3,3")
+                .style('fill',"none")
+                //.attr("fake",function(d){console.log(d)})
+                .attr("d", line1)
+                ;
+                /*
+                .style("stroke-dasharray",function(d){
+                  console.log(d)
+                  if (+d.year>2016){
+                    return "5,5"
+                  }
+                  else{
+                    return "0,0"  
+                  }
+                })*/
+                 // Calls the line generator 
+        /*     
+        svg_y.append("path")
+                .datum(movingresult) //  Binds data to the line 
+                .attr("class", "line2") // Assign a class for styling 
+                .style('stroke',line2color)
+                .style("stroke-width",2)
+                .style('fill',"none")
+                //.attr("fake",function(d){console.log(d)})
+                .attr("d", line2); // Calls the line generator 
+       
+        svg_y.append("path")
+                .datum(maxpeakresult) //  Binds data to the line 
+                .attr("class", "line3") // Assign a class for styling 
+                .style('stroke',line3color)
+                .style("stroke-width",1)
+                .style('fill',"none")
+                //.attr("fake",function(d){console.log(d)})
+                .attr("d", line3); // Calls the line generator 
+
+        svg_y.append("path")
+                .datum(minpeakresult) //  Binds data to the line 
+                .attr("class", "line4") // Assign a class for styling 
+                .style('stroke',line3color)
+                .style("stroke-width",1)
+                .style('fill',"none")
+                //.attr("fake",function(d){console.log(d)})
+                .attr("d", line4); // Calls the line generator 
+          */
+        //Create X axis
+            svg_y.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(0," + height_s + ")")
+                    //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                    .call(xAxis);
+
+        //Create Y axis
+            svg_y.append("g")
+                    .attr("class", "axis")
+                // .attr("transform", "translate(" + padding + ",0)")
+                    .call(yAxis);
+
+
+          // add the X gridlines
+            svg_y.append("g")			
+                .attr("class", "grid")
+                .attr("transform", "translate(0," + height_s + ")")
+                .call(make_x_gridlines()
+                    .tickSize(-height_s)
+                    .tickFormat("")
+                )
+
+            // add the Y gridlines
+            svg_y.append("g")			
+                .attr("class", "grid")
+                .call(make_y_gridlines()
+                    .tickSize(-width_s)
+                    .tickFormat("")
+                )
+            
+
+
+
+            // Add the title:
+            svg_y.append("text")
+                .attr("x", (width_s / 2))             
+                .attr("y", -margin_s.top/2)
+                .attr("text-anchor", "middle")
+                .attr("class", "title")
+                .style("font-size", "20px")
+                .style("font-family", "avenir next")
+                .style("fill", "#696969")
+                .style("font-weight", "bold")
+                .text("Yearly Trend for " + st +" - " + title);
+
+            // apply the reults of the least squares regression
+            var reg = trend.filter(function(t){return t.State == st });
+            var x1 = 1950;
+            var x2 = 2016;
+
+
+           // console.log(trendData)  
+          //console.log(datatype, reg[0].prcpIntercept)
+           if (datatype == "tmax"){
+             y1 = +reg[0].tmaxIntercept ;
+             change = ((+x2-x1)*(+reg[0].tmaxSlope));
+             y2 = +reg[0].tmaxIntercept + change;
+             //console.log(y1,y2)
+           }
+           else if(datatype =="prcp"){
+           // console.log(datatype, reg[0].prcpIntercept)
+              y1 = +reg[0].prcpIntercept ;
+              change = ((+x2-x1)*(+reg[0].prcpSlope));
+              y2 = +reg[0].prcpIntercept + change;
+            //  console.log(y1,y2)
+           }
+
+           if (change > 0)
+           {
+             changetext = "+" + Math.round( change * 10 ) / 10
+           }
+           else
+           {
+            changetext = Math.round( change * 10 ) / 10
+           }
+
+           var trendData = [[x1,y1,x2,y2]];
+           //console.log(trendData)
+            var trendline = svg_y.selectAll(".trendline")
+              .data(trendData);
+            
+      /*      trendline.enter()
+              .append("line")
+              .attr("class", "trendline")
+              .attr("x1", function(d) { return x(d[0]); })
+              .attr("y1", function(d) { return y_yearly(d[1]); })
+              .attr("x2", function(d) { return x(d[2]); })
+              .attr("y2", function(d) { return y_yearly(d[3]); })
+              .attr("stroke", linecolor)
+              .attr("stroke-width", 2.5);
+
+          */
+
+          svg_y.append("text")
+              .attr("x", width_s*.05-10)             
+                .attr("y", height_s+50)
+                .attr("text-anchor", "start")
+                .attr("class", "sttitle")
+                .style("font-size", "15px")
+                .style("font-family", "Avenir")
+                .style("fill", "black")
+                .style("text-decoration", "underline")
+                .text(linelegendtext);              // Add the TEMP CHANGE:
+            
+              svg_y.append("text")
+              .attr("x", width_s*.05+200)             
+                .attr("y", height_s+70)
+                .attr("text-anchor", "start")
+                .attr("class", "sttitle")
+                .style("font-size", "20px")
+                .style("font-family", "Avenir")
+                .style("fill", linecolor)
+                .text(changetext);
+
+              // Add the State Legend:
+              svg_y.append("text")
+                .attr("x", width_s*.05)             
+                .attr("y", height_s+70)
+                .attr("text-anchor", "start")
+                .attr("class", "legendst")
+                .style("font-size", "20px")
+                .style("font-family", "Avenir")
+                .style("fill", linecolor)
+                .text(st);
+
+      svg_y.append("text")
+       .attr("transform", "rotate(-90)") 
+       .attr("x", 0 - height_s/2 ) 
+        .attr("y", 0-margin_s.left/2 )
+       //.attr("dy", "1em")
+        .style("fill", 'black')
+        .text(yaxislabel)
+        .attr("text-anchor", "middle")
+        .style("alignment-baseline", "central")
+
+          //Add the line Legend:
+              svg_y.append("text")
+                .attr("x", width_s*.05+390)             
+                .attr("y", height_s+75)
+                .attr("text-anchor", "start")
+                .attr("class", "legendhist")
+                .style("font-size", "14px")
+                .style("font-family", "Avenir")
+                .style("fill", linecolor)
+                .text("Historical");
+          
+          var histlegendData = [[width_s*.05+350,height_s+70,width_s*.05+350+35,height_s+70]];
+           //console.log(trendData)
+            var histline = svg_y.selectAll(".histline")
+              .data(histlegendData);
+            
+          histline.enter()
+              .append("line")
+              .attr("class", "histline")
+              .attr("x1", function(d) { return d[0]; })
+              .attr("y1", function(d) { return d[1]; })
+              .attr("x2", function(d) { return d[2]; })
+              .attr("y2", function(d) { return d[3]; })
+              .attr("stroke", linecolor)
+              .attr("stroke-width", 2);
+
+          //Add the line Legend:
+          svg_y.append("text")
+                .attr("x", width_s*.05+390)             
+                .attr("y", height_s+50)
+                .attr("text-anchor", "start")
+                .attr("class", "legendhist")
+                .style("font-size", "14px")
+                .style("font-family", "Avenir")
+                .style("fill", linecolor)
+                .text("Forecasted");
+          
+          var forecastlegendData = [[width_s*.05+350,height_s+50,width_s*.05+350+35,height_s+50]];
+           //console.log(trendData)
+            var forecastline = svg_y.selectAll(".forecastline")
+              .data(forecastlegendData);
+            
+          forecastline.enter()
+              .append("line")
+              .attr("class", "forecastline")
+              .attr("x1", function(d) { return d[0]; })
+              .attr("y1", function(d) { return d[1]; })
+              .attr("x2", function(d) { return d[2]; })
+              .attr("y2", function(d) { return d[3]; })
+              .attr("stroke", linecolor)
+              .style("stroke-dasharray","3,3")
+              .attr("stroke-width", 2);
+ 
+
+      //state dropdown change
+      var statedropdownChange = function(){
+              console.log("instate drop down")
+              newstate = d3.select(this).property('value');
+          
+          var yearlynewSt = yearlyflat.filter(function(t){return t.state == newstate }).sort(function(a, b){ return d3.ascending(a.year, b.year); })
+
+
+          // draw compare line
+            comparelinecolor = "gray"
+
+
+            d3.selectAll(".ctrendline").remove();
+            
+            d3.selectAll(".legendsnewst").remove();
+            d3.selectAll(".newstchange").remove();
+            d3.selectAll(".newstline").remove();
+            yearlynewStHist= yearlynewSt.filter((function(t){return t.year <= 2016 }))
+            svg_y.append("path")
+                .datum(yearlynewStHist) //  Binds data to the line 
+                .attr("class", "newstline") // Assign a class for styling 
+                .style('stroke',comparelinecolor)
+                .style("stroke-width",1)
+                .style('fill',"none")
+                //.attr("fake",function(d){console.log(d)})
+                .attr("d", line1); // Calls the line generator 
+
+            yearlynewStforecast = yearlynewSt.filter((function(t){return t.year >= 2016 }))
+            svg_y.append("path")
+                .datum(yearlynewStforecast) //  Binds data to the line 
+                .attr("class", "newstline") // Assign a class for styling 
+                .style('stroke',comparelinecolor)
+                .style("stroke-width",1)
+                .style("stroke-dasharray","3,3")
+                .style('fill',"none")
+                //.attr("fake",function(d){console.log(d)})
+                .attr("d", line1)
+                ;
+
+          //compare line trend
+          // apply the reults of the least squares regression
+          var comparereg = trend.filter(function(t){return t.State == newstate });
+           // console.log(+reg[0].Slope)
+            var cx1 = 1950;
+           
+            var cx2 = 2016;
+            var comparechange = ((+cx2-cx1)*(+comparereg[0].tmaxSlope));
+           
+            if (datatype == "tmax"){
+             cy1 = +comparereg[0].tmaxIntercept ;
+             comparechange = ((+x2-x1)*(+comparereg[0].tmaxSlope));
+             cy2 = +comparereg[0].tmaxIntercept + comparechange;
+             console.log(y1,y2)
+            }
+           else if(datatype =="prcp"){
+           // console.log(datatype, reg[0].prcpIntercept)
+              cy1 = +comparereg[0].prcpIntercept ;
+              comparechange = ((+x2-x1)*(+comparereg[0].prcpSlope));
+              cy2 = +comparereg[0].prcpIntercept + comparechange;
+            //  console.log(y1,y2)
+            }
+            if (comparechange > 0)
+           {
+             comparechangetext = "+" + Math.round( comparechange * 10 ) / 10
+           }
+           else
+           {
+            comparechangetext = Math.round( comparechange * 10 ) / 10
+           }
+
+            var ctrendData = [[cx1,cy1,cx2,cy2]];
+            console.log(ctrendData)  
+            
+            
+            var ctrendline = svg_y.selectAll(".ctrendline")
+              .data(ctrendData);
+            //console.log(comparelinecolor)
+          /*  ctrendline.enter()
+              .append("line")
+              .attr("class", "ctrendline")
+              .attr("x1", function(d) { return x(d[0]); })
+              .attr("y1", function(d) { return y_yearly(d[1]); })
+              .attr("x2", function(d) { return x(d[2]); })
+              .attr("y2", function(d) { return y_yearly(d[3]); })
+              .attr("stroke", comparelinecolor)
+              .attr("stroke-width", 2.5);
+  
+              if (Math.abs(y_yearly(cy1)-y_yearly(y1)<40)){
+                  if (cy1<y1){
+                    cyy = y_yearly(cy1)+35
+                  }
+                  else{
+                    cyy = y_yearly(cy1)-35
+                  }
+                  }
+                  else {
+                    cyy = y_yearly(cy1)+20
+                  }
+        */
+              // Add the newState Legend:
+              svg_y.append("text")
+                .attr("x", width_s*.05)             
+                .attr("y", height_s+70+20)
+                .attr("text-anchor", "start")
+                .attr("class", "legendsnewst")
+                .style("font-size", "20px")
+                .style("font-family", "Avenir")
+                .style("fill", comparelinecolor)
+                .text(newstate);
+            
+             svg_y.append("text")
+              .attr("x", width_s*.05+ 200)             
+                .attr("y", height_s+70+20)
+                .attr("text-anchor", "start")
+                .attr("class", "newstchange")
+                .style("font-size", "20px")
+                .style("font-family", "Avenir")
+                .style("fill", comparelinecolor)
+                .text(comparechangetext);
+
+            }  
+        var statedropDown = d3.select("#state-dropdown-container")
+                        .append("select")
+                        .attr("id","stdropdown")
+                        .attr("text-anchor", "middle")
+                        .style("alignment-baseline", "start")  
+                        .on("change", statedropdownChange);
+       //console.log(uniquestate)
+        var stateoptions = statedropDown.selectAll("option")
+                .data(uniquestate)
+                .enter()
+                .append("option");
+        
+            stateoptions.text(function(d) {
+                    return d;   
+                })
+                .attr("value", function(d) {
+                    return d;
+                })
+                .property("selected", function(d){
+                    return d == uniquestate[0];
+                })
+                ;  
+    
+            
+
+
+        }
+        
+    }
+    //<<<<<<<<<<<<End of Ready functions
+}
+
+
+
+</script>
+</body>
